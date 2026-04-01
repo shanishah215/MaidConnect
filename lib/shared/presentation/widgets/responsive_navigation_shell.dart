@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class NavItem {
   const NavItem({
@@ -27,14 +28,15 @@ class ResponsiveNavigationShell extends StatelessWidget {
   final List<Widget> appBarActions;
 
   bool _isSelected(BuildContext context, String route) {
-    final String? current = ModalRoute.of(context)?.settings.name;
-    return current == route;
+    // Use GoRouter's current URI path for accurate selection state
+    final String location = GoRouterState.of(context).uri.path;
+    return location == route;
   }
 
   void _goTo(BuildContext context, String route) {
-    final String? current = ModalRoute.of(context)?.settings.name;
+    final String current = GoRouterState.of(context).uri.path;
     if (current != route) {
-      Navigator.pushReplacementNamed(context, route);
+      context.go(route);
     }
   }
 
@@ -54,7 +56,7 @@ class ResponsiveNavigationShell extends StatelessWidget {
                         leading: Icon(item.icon),
                         title: Text(item.label),
                         onTap: () {
-                          Navigator.pop(context);
+                          Navigator.pop(context); // close drawer
                           _goTo(context, item.route);
                         },
                       ),
@@ -69,9 +71,12 @@ class ResponsiveNavigationShell extends StatelessWidget {
               children: [
                 NavigationRail(
                   backgroundColor: Colors.white,
-                  selectedIndex: navItems.indexWhere(
-                    (item) => _isSelected(context, item.route),
-                  ),
+                  selectedIndex: () {
+                    final int idx = navItems.indexWhere(
+                      (item) => _isSelected(context, item.route),
+                    );
+                    return idx < 0 ? 0 : idx;
+                  }(),
                   onDestinationSelected: (index) {
                     _goTo(context, navItems[index].route);
                   },

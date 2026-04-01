@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../app/router/app_routes.dart';
 import '../../../../shared/presentation/widgets/responsive_navigation_shell.dart';
@@ -64,10 +65,7 @@ class _RequestStatusPageState extends State<RequestStatusPage> {
                   'Submit a callback or hire request from any maid profile to start tracking.',
               icon: Icons.track_changes_outlined,
               action: FilledButton.tonal(
-                onPressed: () => Navigator.pushReplacementNamed(
-                  context,
-                  AppRoutes.maidListing,
-                ),
+                onPressed: () => context.go(AppRoutes.maidListing),
                 child: const Text('Find profiles'),
               ),
             )

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../app/router/app_routes.dart';
 import '../state/client_portal_store.dart';
@@ -48,8 +49,7 @@ class _ClientDashboardPageState extends State<ClientDashboardPage> {
         padding: const EdgeInsets.all(16),
         children: [
           _HeroHeader(
-            onSearchTap: () =>
-                Navigator.pushReplacementNamed(context, AppRoutes.maidListing),
+            onSearchTap: () => context.go(AppRoutes.maidListing),
           ),
           const SizedBox(height: 16),
           Wrap(
@@ -91,10 +91,7 @@ class _ClientDashboardPageState extends State<ClientDashboardPage> {
                   ),
                   const SizedBox(height: 12),
                   FilledButton(
-                    onPressed: () => Navigator.pushReplacementNamed(
-                      context,
-                      AppRoutes.maidListing,
-                    ),
+                    onPressed: () => context.go(AppRoutes.maidListing),
                     child: const Text('Explore maid profiles'),
                   ),
                 ],

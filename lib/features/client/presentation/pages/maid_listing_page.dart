@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../app/router/app_routes.dart';
 import '../../../../shared/presentation/widgets/responsive_navigation_shell.dart';
@@ -257,8 +258,7 @@ class _ResultCardsState extends State<_ResultCards> {
             'Try broadening age or availability filters, or clear the search query.',
         icon: Icons.search_off,
         action: FilledButton.tonalIcon(
-          onPressed: () =>
-              Navigator.pushReplacementNamed(context, AppRoutes.maidListing),
+          onPressed: () => context.go(AppRoutes.maidListing),
           icon: const Icon(Icons.restart_alt),
           label: const Text('Reset view'),
         ),

@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../app/router/app_routes.dart';
 import '../../../../app/router/auth_state.dart';
 import '../../../../shared/presentation/widgets/responsive_navigation_shell.dart';
 
+/// Navigation shell for the Client Portal.
+/// Sign-out redirects to /client/login — strictly within the client module.
 class ClientPortalShell extends StatelessWidget {
   const ClientPortalShell({
     super.key,
@@ -16,13 +19,9 @@ class ClientPortalShell extends StatelessWidget {
   final List<NavItem> navItems;
   final Widget child;
 
-  void _goToLogin(BuildContext context) {
+  void _signOut(BuildContext context) {
     AuthState.instance.signOut();
-    Navigator.pushNamedAndRemoveUntil(
-      context,
-      AppRoutes.clientLogin,
-      (route) => false,
-    );
+    context.go(AppRoutes.clientLogin);
   }
 
   @override
@@ -31,7 +30,7 @@ class ClientPortalShell extends StatelessWidget {
       canPop: false,
       onPopInvokedWithResult: (didPop, result) {
         if (!didPop) {
-          _goToLogin(context);
+          _signOut(context);
         }
       },
       child: ResponsiveNavigationShell(
@@ -39,7 +38,7 @@ class ClientPortalShell extends StatelessWidget {
         navItems: navItems,
         appBarActions: <Widget>[
           TextButton.icon(
-            onPressed: () => _goToLogin(context),
+            onPressed: () => _signOut(context),
             icon: const Icon(Icons.logout),
             label: const Text('Logout'),
           ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../app/router/app_routes.dart';
 import '../../../../shared/presentation/widgets/responsive_navigation_shell.dart';
@@ -55,10 +56,7 @@ class _ShortlistPageState extends State<ShortlistPage> {
                   'Use shortlist to quickly compare and revisit your favorite profiles.',
               icon: Icons.favorite_border,
               action: FilledButton.tonal(
-                onPressed: () => Navigator.pushReplacementNamed(
-                  context,
-                  AppRoutes.maidListing,
-                ),
+                onPressed: () => context.go(AppRoutes.maidListing),
                 child: const Text('Browse profiles'),
               ),
             )
