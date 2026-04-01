@@ -10,14 +10,41 @@ import '../../../../shared/presentation/widgets/responsive_navigation_shell.dart
 class ClientPortalShell extends StatelessWidget {
   const ClientPortalShell({
     super.key,
-    required this.title,
-    required this.navItems,
     required this.child,
   });
 
-  final String title;
-  final List<NavItem> navItems;
   final Widget child;
+  
+  static final List<NavItem> _nav = <NavItem>[
+    const NavItem(
+      label: 'Dashboard',
+      route: AppRoutes.clientDashboard,
+      icon: Icons.grid_view_rounded,
+    ),
+    const NavItem(
+      label: 'Find Maids',
+      route: AppRoutes.maidListing,
+      icon: Icons.search_rounded,
+    ),
+    const NavItem(
+      label: 'Shortlist',
+      route: AppRoutes.shortlist,
+      icon: Icons.favorite_outline_rounded,
+    ),
+    const NavItem(
+      label: 'Request Status',
+      route: AppRoutes.requestStatus,
+      icon: Icons.track_changes_outlined,
+    ),
+  ];
+
+  String _getTitle(BuildContext context) {
+    final location = GoRouterState.of(context).uri.path;
+    if (location.startsWith(AppRoutes.maidListing)) return 'Find Maids';
+    if (location.startsWith(AppRoutes.shortlist)) return 'Shortlist';
+    if (location.startsWith(AppRoutes.requestStatus)) return 'Request Status';
+    return 'Dashboard';
+  }
 
   void _signOut(BuildContext context) {
     AuthState.instance.signOut();
@@ -34,8 +61,8 @@ class ClientPortalShell extends StatelessWidget {
         }
       },
       child: ResponsiveNavigationShell(
-        title: title,
-        navItems: navItems,
+        title: _getTitle(context),
+        navItems: _nav,
         appBarActions: <Widget>[
           TextButton.icon(
             onPressed: () => _signOut(context),
@@ -44,7 +71,7 @@ class ClientPortalShell extends StatelessWidget {
           ),
           const SizedBox(width: 8),
         ],
-        child: child,
+        child: child, // Side-by-side content injected here
       ),
     );
   }

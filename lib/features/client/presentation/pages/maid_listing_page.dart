@@ -2,18 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../app/router/app_routes.dart';
-import '../../../../shared/presentation/widgets/responsive_navigation_shell.dart';
 import '../../domain/entities/client_portal_models.dart';
 import '../state/client_portal_store.dart';
-import '../widgets/client_portal_shell.dart';
 import '../widgets/client_ui_states.dart';
 import '../widgets/maid_filter_panel.dart';
 import '../widgets/maid_profile_card.dart';
 import 'maid_profile_detail_page.dart';
 
 class MaidListingPage extends StatefulWidget {
-  const MaidListingPage({super.key, required this.navItems});
-  final List<NavItem> navItems;
+  const MaidListingPage({super.key});
 
   @override
   State<MaidListingPage> createState() => _MaidListingPageState();
@@ -69,11 +66,7 @@ class _MaidListingPageState extends State<MaidListingPage> {
   @override
   Widget build(BuildContext context) {
     if (_isLoading) {
-      return ClientPortalShell(
-        title: 'Find Maids',
-        navItems: widget.navItems,
-        child: const ClientLoadingState(),
-      );
+      return const ClientLoadingState();
     }
     final store = ClientPortalStore.instance;
     final List<String> allSkills =
@@ -83,10 +76,7 @@ class _MaidListingPageState extends State<MaidListingPage> {
     final filtered = _applyFilters(store.maids);
     final bool isMobile = MediaQuery.of(context).size.width < 960;
 
-    return ClientPortalShell(
-      title: 'Find Maids',
-      navItems: widget.navItems,
-      child: Padding(
+    return Padding(
         padding: const EdgeInsets.all(16),
         child: isMobile
             ? _MobileListing(
@@ -120,7 +110,6 @@ class _MaidListingPageState extends State<MaidListingPage> {
                     ),
                   ),
                 ],
-              ),
       ),
     );
   }
@@ -151,12 +140,29 @@ class _MobileListing extends StatelessWidget {
       children: [
         const _ListingHeader(),
         const SizedBox(height: 12),
-        TextField(
-          decoration: const InputDecoration(
-            prefixIcon: Icon(Icons.search),
-            hintText: 'Search by name or skill',
+        Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(16),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.04),
+                blurRadius: 16,
+                offset: const Offset(0, 4),
+              ),
+            ],
+            border: Border.all(color: const Color(0xFFE2E8F0)),
           ),
-          onChanged: onQueryChanged,
+          child: TextField(
+            decoration: const InputDecoration(
+              prefixIcon: Icon(Icons.search_rounded, color: Color(0xFF94A3B8)),
+              hintText: 'Search by name, tags, or skills...',
+              hintStyle: TextStyle(color: Color(0xFF94A3B8)),
+              border: InputBorder.none,
+              contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+            ),
+            onChanged: onQueryChanged,
+          ),
         ),
         const SizedBox(height: 12),
         ExpansionTile(
@@ -195,12 +201,29 @@ class _ListingResults extends StatelessWidget {
       children: [
         const _ListingHeader(),
         const SizedBox(height: 12),
-        TextField(
-          decoration: const InputDecoration(
-            prefixIcon: Icon(Icons.search),
-            hintText: 'Search by name or skill',
+        Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(16),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.04),
+                blurRadius: 16,
+                offset: const Offset(0, 4),
+              ),
+            ],
+            border: Border.all(color: const Color(0xFFE2E8F0)),
           ),
-          onChanged: onQueryChanged,
+          child: TextField(
+            decoration: const InputDecoration(
+              prefixIcon: Icon(Icons.search_rounded, color: Color(0xFF94A3B8)),
+              hintText: 'Search by name, tags, or skills...',
+              hintStyle: TextStyle(color: Color(0xFF94A3B8)),
+              border: InputBorder.none,
+              contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+            ),
+            onChanged: onQueryChanged,
+          ),
         ),
         const SizedBox(height: 12),
         Expanded(child: _ResultCards(filtered: filtered)),
@@ -216,22 +239,38 @@ class _ListingHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(14),
+      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: const Color(0xFFDDE4F1)),
+        color: const Color(0xFFF8FAFC),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: const Color(0xFFE2E8F0)),
       ),
-      child: const Column(
+      child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            'Verified professionals',
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+          Row(
+            children: const [
+              Icon(Icons.stars_rounded, color: Color(0xFFF59E0B)),
+              SizedBox(width: 8),
+              Text(
+                'Explore the Network',
+                style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: Color(0xFFF59E0B)),
+              ),
+            ],
           ),
-          SizedBox(height: 4),
+          const SizedBox(height: 12),
           Text(
-            'Compare experience, skills, languages, and send requests in minutes.',
+            'Verified Professionals',
+            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+              fontWeight: FontWeight.w800,
+              color: const Color(0xFF0F172A),
+              letterSpacing: -0.5,
+            ),
+          ),
+          const SizedBox(height: 6),
+          const Text(
+            'Filter by experience, languages, or specialized skills to find your perfect match.',
+            style: TextStyle(color: Color(0xFF64748B), fontSize: 16),
           ),
         ],
       ),

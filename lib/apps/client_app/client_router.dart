@@ -6,6 +6,7 @@ import 'package:maidconnect/apps/client_app/pages/client_register_page.dart';
 import '../../../app/router/app_routes.dart';
 import '../../../app/router/auth_state.dart';
 import '../../../features/client/presentation/pages/client_pages.dart';
+import '../../../features/client/presentation/widgets/client_portal_shell.dart';
 
 /// All routes that belong exclusively to the Client Portal.
 ///
@@ -35,32 +36,40 @@ class ClientRouter {
     ),
 
     // ── Protected client routes (requires client auth) ───────────────────────
-    GoRoute(
-      path: AppRoutes.clientDashboard,
-      redirect: _clientGuard,
-      builder: (context, state) => ClientPages.dashboard(),
-    ),
-    GoRoute(
-      path: AppRoutes.maidListing,
-      redirect: _clientGuard,
-      builder: (context, state) => ClientPages.maidListing(),
-    ),
-    GoRoute(
-      path: AppRoutes.shortlist,
-      redirect: _clientGuard,
-      builder: (context, state) => ClientPages.shortlist(),
-    ),
-    GoRoute(
-      path: AppRoutes.requestStatus,
-      redirect: _clientGuard,
-      builder: (context, state) => ClientPages.requestStatus(),
+    ShellRoute(
+      builder: (context, state, child) {
+        return ClientPortalShell(child: child);
+      },
+      routes: [
+        GoRoute(
+          path: AppRoutes.clientDashboard,
+          redirect: _clientGuard,
+          builder: (context, state) => ClientPages.dashboard(),
+        ),
+        GoRoute(
+          path: AppRoutes.maidListing,
+          redirect: _clientGuard,
+          builder: (context, state) => ClientPages.maidListing(),
+        ),
+        GoRoute(
+          path: AppRoutes.shortlist,
+          redirect: _clientGuard,
+          builder: (context, state) => ClientPages.shortlist(),
+        ),
+        GoRoute(
+          path: AppRoutes.requestStatus,
+          redirect: _clientGuard,
+          builder: (context, state) => ClientPages.requestStatus(),
+        ),
+      ],
     ),
   ];
 
   /// Redirect unauthenticated clients to the client login screen.
   static String? _clientGuard(BuildContext context, GoRouterState state) {
-    return AuthState.instance.isClientAuthenticated
-        ? null
-        : AppRoutes.clientLogin;
+    if (!AuthState.instance.isClientAuthenticated) {
+      return AppRoutes.clientLogin;
+    }
+    return null;
   }
 }
