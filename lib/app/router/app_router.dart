@@ -4,7 +4,6 @@ import '../../features/admin/presentation/pages/admin_pages.dart';
 import '../../features/auth/presentation/pages/auth_pages.dart';
 import '../../features/client/presentation/pages/client_pages.dart';
 import '../../features/public/presentation/pages/public_pages.dart';
-import '../../shared/presentation/screens/not_found_screen.dart';
 import 'app_routes.dart';
 import 'route_guard.dart';
 
@@ -65,7 +64,7 @@ class AppRouter {
       case AppRoutes.analyticsDashboard:
         return AdminPages.analyticsDashboard();
       default:
-        return const NotFoundScreen();
+        return PublicPages.home();
     }
   }
 }
