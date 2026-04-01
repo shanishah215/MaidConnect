@@ -1,3 +1,7 @@
+import '../entities/client_portal_models.dart';
+
 abstract class ClientRepository {
-  Future<void> getDashboard();
+  Future<List<MaidProfile>> getMaidProfiles();
+
+  Future<List<ClientRequest>> getClientRequests();
 }

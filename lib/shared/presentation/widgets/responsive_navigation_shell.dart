@@ -4,10 +4,12 @@ class NavItem {
   const NavItem({
     required this.label,
     required this.route,
+    this.icon = Icons.circle_outlined,
   });
 
   final String label;
   final String route;
+  final IconData icon;
 }
 
 class ResponsiveNavigationShell extends StatelessWidget {
@@ -16,11 +18,13 @@ class ResponsiveNavigationShell extends StatelessWidget {
     required this.title,
     required this.navItems,
     required this.child,
+    this.appBarActions = const <Widget>[],
   });
 
   final String title;
   final List<NavItem> navItems;
   final Widget child;
+  final List<Widget> appBarActions;
 
   bool _isSelected(BuildContext context, String route) {
     final String? current = ModalRoute.of(context)?.settings.name;
@@ -39,7 +43,7 @@ class ResponsiveNavigationShell extends StatelessWidget {
     final bool isMobile = MediaQuery.of(context).size.width < 900;
 
     return Scaffold(
-      appBar: AppBar(title: Text(title)),
+      appBar: AppBar(title: Text(title), actions: appBarActions, elevation: 0),
       drawer: isMobile
           ? Drawer(
               child: ListView(
@@ -47,6 +51,7 @@ class ResponsiveNavigationShell extends StatelessWidget {
                     .map(
                       (item) => ListTile(
                         selected: _isSelected(context, item.route),
+                        leading: Icon(item.icon),
                         title: Text(item.label),
                         onTap: () {
                           Navigator.pop(context);
@@ -63,6 +68,7 @@ class ResponsiveNavigationShell extends StatelessWidget {
           : Row(
               children: [
                 NavigationRail(
+                  backgroundColor: Colors.white,
                   selectedIndex: navItems.indexWhere(
                     (item) => _isSelected(context, item.route),
                   ),
@@ -73,9 +79,11 @@ class ResponsiveNavigationShell extends StatelessWidget {
                   destinations: navItems
                       .map(
                         (item) => NavigationRailDestination(
-                          icon: const Icon(Icons.circle_outlined, size: 12),
-                          selectedIcon:
-                              const Icon(Icons.circle, size: 12),
+                          icon: Icon(item.icon),
+                          selectedIcon: Icon(
+                            item.icon,
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
                           label: Text(item.label),
                         ),
                       )
