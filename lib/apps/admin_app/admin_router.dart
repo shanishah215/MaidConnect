@@ -79,6 +79,8 @@ class AdminRouter {
 
   /// Redirect unauthenticated admins to the admin login screen.
   static String? _adminGuard(BuildContext context, GoRouterState state) {
+    if (AuthState.instance.isInitialising) return null; // Wait for init
+
     return AuthState.instance.isAdminAuthenticated
         ? null
         : AppRoutes.adminLogin;

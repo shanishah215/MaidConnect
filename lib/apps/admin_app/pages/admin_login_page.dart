@@ -1,8 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart'; // Added
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../app/router/app_routes.dart';
-import '../../../app/router/auth_state.dart';
 
 /// Admin login page — isolated within the Admin Panel.
 /// No links to public website or client portal.
@@ -18,6 +19,7 @@ class _AdminLoginPageState extends State<AdminLoginPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   bool _obscurePassword = true;
+  bool _isLoading = false;
 
   @override
   void dispose() {
@@ -26,10 +28,50 @@ class _AdminLoginPageState extends State<AdminLoginPage> {
     super.dispose();
   }
 
-  void _submit() {
+  Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) return;
-    AuthState.instance.signInAdmin();
-    context.go(AppRoutes.adminDashboard);
+
+    setState(() => _isLoading = true);
+
+    try {
+      final credentials = await FirebaseAuth.instance
+          .signInWithEmailAndPassword(
+            email: _emailController.text.trim(),
+            password: _passwordController.text,
+          );
+
+      // Verify if they are actually an Admin before navigating
+      final userDoc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(credentials.user?.uid)
+          .get();
+
+      final role = userDoc.data()?['role'] as String?;
+
+      if (role != 'admin') {
+        // Not an admin! Sign out immediately.
+        await FirebaseAuth.instance.signOut();
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Access Denied: You do not have Admin privileges.'),
+              backgroundColor: Colors.redAccent,
+            ),
+          );
+        }
+        return;
+      }
+
+      if (mounted) context.go(AppRoutes.adminDashboard);
+    } on FirebaseAuthException catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(e.message ?? 'Authentication failed')),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
+    }
   }
 
   @override
@@ -65,7 +107,7 @@ class _AdminLoginPageState extends State<AdminLoginPage> {
                 ),
                 const SizedBox(height: 20),
                 Text(
-                  'Admin Panel',
+                  'Maid Connect - Admin',
                   style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                     fontWeight: FontWeight.w700,
                     color: Colors.white,
@@ -74,9 +116,9 @@ class _AdminLoginPageState extends State<AdminLoginPage> {
                 const SizedBox(height: 4),
                 Text(
                   'Restricted access — authorized personnel only',
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: Colors.grey[400],
-                  ),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodySmall?.copyWith(color: Colors.grey[400]),
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 32),
@@ -85,8 +127,7 @@ class _AdminLoginPageState extends State<AdminLoginPage> {
                   elevation: 0,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(16),
-                    side:
-                        const BorderSide(color: Color(0xFF334155)),
+                    side: const BorderSide(color: Color(0xFF334155)),
                   ),
                   child: Padding(
                     padding: const EdgeInsets.all(24),
@@ -101,8 +142,7 @@ class _AdminLoginPageState extends State<AdminLoginPage> {
                             style: const TextStyle(color: Colors.white),
                             decoration: InputDecoration(
                               labelText: 'Admin Email',
-                              labelStyle:
-                                  TextStyle(color: Colors.grey[400]),
+                              labelStyle: TextStyle(color: Colors.grey[400]),
                               prefixIcon: Icon(
                                 Icons.email_outlined,
                                 color: Colors.grey[400],
@@ -120,13 +160,15 @@ class _AdminLoginPageState extends State<AdminLoginPage> {
                                 borderRadius: BorderRadius.circular(10),
                               ),
                               errorBorder: OutlineInputBorder(
-                                borderSide:
-                                    const BorderSide(color: Colors.redAccent),
+                                borderSide: const BorderSide(
+                                  color: Colors.redAccent,
+                                ),
                                 borderRadius: BorderRadius.circular(10),
                               ),
                               focusedErrorBorder: OutlineInputBorder(
-                                borderSide:
-                                    const BorderSide(color: Colors.redAccent),
+                                borderSide: const BorderSide(
+                                  color: Colors.redAccent,
+                                ),
                                 borderRadius: BorderRadius.circular(10),
                               ),
                             ),
@@ -147,8 +189,7 @@ class _AdminLoginPageState extends State<AdminLoginPage> {
                             style: const TextStyle(color: Colors.white),
                             decoration: InputDecoration(
                               labelText: 'Password',
-                              labelStyle:
-                                  TextStyle(color: Colors.grey[400]),
+                              labelStyle: TextStyle(color: Colors.grey[400]),
                               prefixIcon: Icon(
                                 Icons.lock_outline,
                                 color: Colors.grey[400],
@@ -177,13 +218,15 @@ class _AdminLoginPageState extends State<AdminLoginPage> {
                                 borderRadius: BorderRadius.circular(10),
                               ),
                               errorBorder: OutlineInputBorder(
-                                borderSide:
-                                    const BorderSide(color: Colors.redAccent),
+                                borderSide: const BorderSide(
+                                  color: Colors.redAccent,
+                                ),
                                 borderRadius: BorderRadius.circular(10),
                               ),
                               focusedErrorBorder: OutlineInputBorder(
-                                borderSide:
-                                    const BorderSide(color: Colors.redAccent),
+                                borderSide: const BorderSide(
+                                  color: Colors.redAccent,
+                                ),
                                 borderRadius: BorderRadius.circular(10),
                               ),
                             ),
@@ -200,14 +243,23 @@ class _AdminLoginPageState extends State<AdminLoginPage> {
                           ),
                           const SizedBox(height: 24),
                           FilledButton(
-                            onPressed: _submit,
+                            onPressed: _isLoading ? null : _submit,
                             style: FilledButton.styleFrom(
                               minimumSize: const Size.fromHeight(48),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10),
                               ),
                             ),
-                            child: const Text('Sign In'),
+                            child: _isLoading
+                                ? const SizedBox(
+                                    height: 20,
+                                    width: 20,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                      color: Colors.white,
+                                    ),
+                                  )
+                                : const Text('Sign In'),
                           ),
                           const SizedBox(height: 12),
                           Text(

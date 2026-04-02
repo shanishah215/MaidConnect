@@ -1,8 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart'; // Added
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../app/router/app_routes.dart';
-import '../../../app/router/auth_state.dart';
 
 /// Client registration page — isolated within the Client Portal.
 /// No links to public website or admin panel.
@@ -19,6 +20,7 @@ class _ClientRegisterPageState extends State<ClientRegisterPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   bool _obscurePassword = true;
+  bool _isLoading = false;
 
   @override
   void dispose() {
@@ -28,11 +30,39 @@ class _ClientRegisterPageState extends State<ClientRegisterPage> {
     super.dispose();
   }
 
-  void _submit() {
+  Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) return;
-    // Demo: auto sign-in on register
-    AuthState.instance.signInClient();
-    context.go(AppRoutes.clientDashboard);
+    
+    setState(() => _isLoading = true);
+
+    try {
+      // 1. Create the user in Auth
+      final userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: _emailController.text.trim(),
+        password: _passwordController.text,
+      );
+
+      // 2. CREATE THE DATABASE RECORD
+      final uid = userCredential.user?.uid;
+      if (uid != null) {
+        await FirebaseFirestore.instance.collection('users').doc(uid).set({
+          'email': _emailController.text.trim(),
+          'name': _nameController.text.trim(),
+          'role': 'client',
+          'createdAt': FieldValue.serverTimestamp(),
+        });
+      }
+      
+      if (mounted) context.go(AppRoutes.clientDashboard);
+    } on FirebaseAuthException catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(e.message ?? 'Registration failed')),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
+    }
   }
 
   @override
@@ -151,14 +181,23 @@ class _ClientRegisterPageState extends State<ClientRegisterPage> {
                           ),
                           const SizedBox(height: 24),
                           FilledButton(
-                            onPressed: _submit,
+                            onPressed: _isLoading ? null : _submit,
                             style: FilledButton.styleFrom(
                               minimumSize: const Size.fromHeight(48),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10),
                               ),
                             ),
-                            child: const Text('Create Account'),
+                            child: _isLoading
+                                ? const SizedBox(
+                                    height: 20,
+                                    width: 20,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                      color: Colors.white,
+                                    ),
+                                  )
+                                : const Text('Create Account'),
                           ),
                           const SizedBox(height: 16),
                           Row(

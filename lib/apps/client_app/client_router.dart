@@ -67,6 +67,8 @@ class ClientRouter {
 
   /// Redirect unauthenticated clients to the client login screen.
   static String? _clientGuard(BuildContext context, GoRouterState state) {
+    if (AuthState.instance.isInitialising) return null; // Wait for init
+    
     if (!AuthState.instance.isClientAuthenticated) {
       return AppRoutes.clientLogin;
     }
