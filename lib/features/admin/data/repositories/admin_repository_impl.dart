@@ -12,6 +12,13 @@ class AdminRepositoryImpl implements AdminRepository {
   }
 
   @override
+  Stream<List<AdminMaidProfile>> getMaidProfilesStream() {
+    return _firestore.collection('maids').orderBy('createdAt', descending: true).snapshots().map((snapshot) {
+      return snapshot.docs.map((doc) => AdminMaidProfile.fromMap(doc.data(), doc.id)).toList();
+    });
+  }
+
+  @override
   Future<List<AdminClient>> getClients() async {
     // We fetch clients from the 'users' collection where role is 'client'
     final snapshot = await _firestore.collection('users').where('role', isEqualTo: 'client').get();
@@ -22,6 +29,13 @@ class AdminRepositoryImpl implements AdminRepository {
   Future<List<ClientInquiry>> getInquiries() async {
     final snapshot = await _firestore.collection('inquiries').orderBy('createdAt', descending: true).get();
     return snapshot.docs.map((doc) => ClientInquiry.fromMap(doc.data(), doc.id)).toList();
+  }
+
+  @override
+  Stream<List<ClientInquiry>> getInquiriesStream() {
+    return _firestore.collection('inquiries').orderBy('createdAt', descending: true).snapshots().map((snapshot) {
+      return snapshot.docs.map((doc) => ClientInquiry.fromMap(doc.data(), doc.id)).toList();
+    });
   }
 
   @override
@@ -59,10 +73,12 @@ class AdminRepositoryImpl implements AdminRepository {
   }
 
   @override
-  Future<void> updateInquiryStatus(String id, InquiryStatus status) async {
-    await _firestore.collection('inquiries').doc(id).update({
-      'status': status.name,
-    });
+  Future<void> updateInquiryStatus(String id, InquiryStatus status, {String? assignedTo}) async {
+    final Map<String, dynamic> data = {'status': status.name};
+    if (assignedTo != null) {
+      data['assignedTo'] = assignedTo;
+    }
+    await _firestore.collection('inquiries').doc(id).update(data);
   }
 }
 

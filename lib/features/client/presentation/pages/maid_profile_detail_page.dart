@@ -131,17 +131,22 @@ class _MaidProfileDetailPageState extends State<MaidProfileDetailPage> {
                         ),
                       ),
                       FilledButton(
-                        onPressed: () {
-                          store.createRequest(
+                        onPressed: () async {
+                          final messenger = ScaffoldMessenger.of(context);
+                          final navigator = Navigator.of(context);
+                          
+                          await store.createRequest(
                             maid: maid,
                             type: _type,
                             notes: _notesController.text.trim(),
                           );
-                          ScaffoldMessenger.of(context).showSnackBar(
+                          
+                          messenger.showSnackBar(
                             const SnackBar(
                               content: Text('Request submitted successfully.'),
                             ),
                           );
+                          navigator.pop();
                         },
                         child: const Text('Submit request'),
                       ),

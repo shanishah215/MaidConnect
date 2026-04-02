@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import '../../../../app/router/app_routes.dart';
 import '../state/client_portal_store.dart';
@@ -18,7 +19,18 @@ class _ClientDashboardPageState extends State<ClientDashboardPage> {
   @override
   void initState() {
     super.initState();
+    ClientPortalStore.instance.addListener(_onStoreChanged);
     _load();
+  }
+
+  @override
+  void dispose() {
+    ClientPortalStore.instance.removeListener(_onStoreChanged);
+    super.dispose();
+  }
+
+  void _onStoreChanged() {
+    if (mounted) setState(() {});
   }
 
   Future<void> _load() async {
@@ -33,11 +45,15 @@ class _ClientDashboardPageState extends State<ClientDashboardPage> {
       return const ClientLoadingState();
     }
 
+    final user = FirebaseAuth.instance.currentUser;
+    final String userName = user?.displayName ?? user?.email?.split('@').first ?? 'Guest';
     final store = ClientPortalStore.instance;
+
     return ListView(
       padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 24),
       children: [
         _HeroHeader(
+          userName: userName,
           onSearchTap: () => context.go(AppRoutes.maidListing),
         ),
         const SizedBox(height: 32),
@@ -318,8 +334,9 @@ class _RequestSnippet extends StatelessWidget {
 }
 
 class _HeroHeader extends StatelessWidget {
-  const _HeroHeader({required this.onSearchTap});
+  const _HeroHeader({required this.onSearchTap, required this.userName});
   final VoidCallback onSearchTap;
+  final String userName;
 
   @override
   Widget build(BuildContext context) {
@@ -360,7 +377,7 @@ class _HeroHeader extends StatelessWidget {
           ),
           const SizedBox(height: 24),
           Text(
-            'Good morning, Priya',
+            'Good morning, $userName',
             style: Theme.of(context).textTheme.headlineMedium?.copyWith(
               color: Colors.white,
               fontWeight: FontWeight.w800,

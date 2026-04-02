@@ -1,7 +1,7 @@
 import '../entities/client_portal_models.dart';
 
 abstract class ClientRepository {
-  Future<List<MaidProfile>> getMaidProfiles();
+  Stream<List<MaidProfile>> getMaidProfiles();
 
-  Future<List<ClientRequest>> getClientRequests();
+  Stream<List<ClientRequest>> getClientRequests(String clientId);
 }

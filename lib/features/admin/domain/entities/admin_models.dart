@@ -10,7 +10,7 @@ enum AdminClientStatus { active, suspended }
 
 enum InquiryType { callback, hire }
 
-enum InquiryStatus { pending, approved, rejected, assigned }
+enum InquiryStatus { pending, approved, rejected, assigned, completed }
 
 // ── Maid Profile ─────────────────────────────────────────────────────────────
 

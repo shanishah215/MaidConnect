@@ -30,6 +30,16 @@ class ClientStatusChip extends StatelessWidget {
         const Color(0xFF106C2A),
         'Approved',
       ),
+      ClientRequestStatus.hired => (
+        const Color(0xFFE0F2FE),
+        const Color(0xFF0369A1),
+        'Hired',
+      ),
+      ClientRequestStatus.rejected => (
+        const Color(0xFFFEE2E2),
+        const Color(0xFF991B1B),
+        'Rejected',
+      ),
       ClientRequestStatus.completed => (
         const Color(0xFFEEEAFD),
         const Color(0xFF5A36C9),

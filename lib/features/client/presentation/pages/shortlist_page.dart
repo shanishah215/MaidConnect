@@ -20,7 +20,18 @@ class _ShortlistPageState extends State<ShortlistPage> {
   @override
   void initState() {
     super.initState();
+    ClientPortalStore.instance.addListener(_onStoreChanged);
     _load();
+  }
+
+  @override
+  void dispose() {
+    ClientPortalStore.instance.removeListener(_onStoreChanged);
+    super.dispose();
+  }
+
+  void _onStoreChanged() {
+    if (mounted) setState(() {});
   }
 
   Future<void> _load() async {

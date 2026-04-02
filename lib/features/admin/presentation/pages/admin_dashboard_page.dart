@@ -18,7 +18,18 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
   @override
   void initState() {
     super.initState();
+    AdminPortalStore.instance.addListener(_onStoreChanged);
     _load();
+  }
+
+  @override
+  void dispose() {
+    AdminPortalStore.instance.removeListener(_onStoreChanged);
+    super.dispose();
+  }
+
+  void _onStoreChanged() {
+    if (mounted) setState(() {});
   }
 
   Future<void> _load() async {

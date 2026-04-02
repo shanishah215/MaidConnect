@@ -12,6 +12,8 @@ class RequestTimeline extends StatelessWidget {
     ClientRequestStatus.underReview,
     ClientRequestStatus.interviewScheduled,
     ClientRequestStatus.approved,
+    ClientRequestStatus.hired,
+    ClientRequestStatus.rejected,
     ClientRequestStatus.completed,
   ];
 
@@ -25,6 +27,10 @@ class RequestTimeline extends StatelessWidget {
         return 'Interview';
       case ClientRequestStatus.approved:
         return 'Approved';
+      case ClientRequestStatus.hired:
+        return 'Hired';
+      case ClientRequestStatus.rejected:
+        return 'Rejected';
       case ClientRequestStatus.completed:
         return 'Completed';
     }

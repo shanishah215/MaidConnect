@@ -1,10 +1,12 @@
+import 'dart:async';
+import 'package:flutter/foundation.dart';
 import '../../data/repositories/admin_repository_impl.dart';
 import '../../domain/entities/admin_models.dart';
 
 /// In-memory singleton store for the Admin Portal.
 /// All state mutations happen here; Firebase can later replace the seed data
 /// by swapping [AdminRepositoryImpl] for a Firebase-backed implementation.
-class AdminPortalStore {
+class AdminPortalStore extends ChangeNotifier {
   AdminPortalStore._();
   static final AdminPortalStore instance = AdminPortalStore._();
   final AdminRepositoryImpl _repo = AdminRepositoryImpl();
@@ -15,6 +17,8 @@ class AdminPortalStore {
   List<ClientInquiry> _inquiries = <ClientInquiry>[];
   AnalyticsSnapshot? _analytics;
   bool _loaded = false;
+  StreamSubscription? _maidsSub;
+  StreamSubscription? _inqsSub;
 
   // ── Getters ────────────────────────────────────────────────────────────────
   List<AdminMaidProfile> get maids => _maids;
@@ -25,11 +29,33 @@ class AdminPortalStore {
   // ── Load ───────────────────────────────────────────────────────────────────
   Future<void> ensureLoaded() async {
     if (_loaded) return;
+    
     _maids = await _repo.getMaidProfiles();
     _clients = await _repo.getClients();
     _inquiries = await _repo.getInquiries();
     _analytics = await _repo.getAnalytics();
+    
+    _maidsSub?.cancel();
+    _maidsSub = _repo.getMaidProfilesStream().listen((list) {
+      _maids = list;
+      notifyListeners();
+    });
+
+    _inqsSub?.cancel();
+    _inqsSub = _repo.getInquiriesStream().listen((list) {
+      _inquiries = list;
+      notifyListeners();
+    });
+
     _loaded = true;
+    notifyListeners();
+  }
+
+  @override
+  void dispose() {
+    _maidsSub?.cancel();
+    _inqsSub?.cancel();
+    super.dispose();
   }
 
   void reset() => _loaded = false;
@@ -74,10 +100,16 @@ class AdminPortalStore {
   }
 
   Future<void> assignInquiry(String id, String maidName) async {
-    await _repo.updateInquiryStatus(id, InquiryStatus.assigned);
+    await _repo.updateInquiryStatus(id, InquiryStatus.assigned, assignedTo: maidName);
     final inq = _inquiries.firstWhere((i) => i.id == id);
     inq.status = InquiryStatus.assigned;
     inq.assignedTo = maidName;
+  }
+
+  Future<void> completeInquiry(String id) async {
+    await _repo.updateInquiryStatus(id, InquiryStatus.completed);
+    final inq = _inquiries.firstWhere((i) => i.id == id);
+    inq.status = InquiryStatus.completed;
   }
 
   // ── Filtered views ─────────────────────────────────────────────────────────
