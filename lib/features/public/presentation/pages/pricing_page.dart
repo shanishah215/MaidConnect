@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../app/router/app_routes.dart';
 import '../widgets/public_site_components.dart';
@@ -122,7 +123,7 @@ class _PlanCard extends StatelessWidget {
           ),
           const Spacer(),
           FilledButton(
-            onPressed: () => Navigator.pushNamed(context, AppRoutes.contact),
+            onPressed: () => context.go(AppRoutes.contact),
             child: const Text('Contact Us'),
           ),
         ],

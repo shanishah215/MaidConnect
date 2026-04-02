@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '../widgets/public_site_components.dart';
 
@@ -70,7 +71,7 @@ class _PublicSinglePageState extends State<PublicSinglePage> {
       _scrollTo(key);
       return;
     }
-    Navigator.pushReplacementNamed(context, route);
+    context.go(route);
   }
 
   void _scrollToTop() {

@@ -61,7 +61,7 @@ class _ClientLoginPageState extends State<ClientLoginPage> {
                 ),
                 const SizedBox(height: 20),
                 Text(
-                  'Client Portal',
+                  'Maid Connect',
                   style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                     fontWeight: FontWeight.w700,
                     color: colorScheme.primary,
@@ -70,9 +70,9 @@ class _ClientLoginPageState extends State<ClientLoginPage> {
                 const SizedBox(height: 4),
                 Text(
                   'Sign in to manage your bookings',
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: Colors.grey[600],
-                  ),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodyMedium?.copyWith(color: Colors.grey[600]),
                 ),
                 const SizedBox(height: 32),
                 Card(
@@ -178,10 +178,7 @@ class _ClientLoginPageState extends State<ClientLoginPage> {
                 const SizedBox(height: 16),
                 Text(
                   'Demo: any email + 6+ char password will sign you in.',
-                  style: TextStyle(
-                    fontSize: 11,
-                    color: Colors.grey[500],
-                  ),
+                  style: TextStyle(fontSize: 11, color: Colors.grey[500]),
                   textAlign: TextAlign.center,
                 ),
               ],

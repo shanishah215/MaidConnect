@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../app/router/app_routes.dart';
 
@@ -161,7 +162,7 @@ class PublicHeaderDrawer extends StatelessWidget {
                   onTap: () {
                     Navigator.pop(context);
                     if (link.route != currentRoute) {
-                      Navigator.pushReplacementNamed(context, link.route);
+                      context.go(link.route);
                     }
                   },
                 ),
@@ -187,7 +188,7 @@ class _HeaderLinkButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextButton(
-      onPressed: () => Navigator.pushReplacementNamed(context, route),
+      onPressed: () => context.go(route),
       child: Text(
         label,
         style: TextStyle(
@@ -271,10 +272,7 @@ class PublicHeroSection extends StatelessWidget {
                             ),
                           ),
                           onPressed: onFindMaid ??
-                              () => Navigator.pushNamed(
-                                    context,
-                                    AppRoutes.contact,
-                                  ),
+                              () => context.go(AppRoutes.contact),
                           child: const Text('Find a Maid'),
                         ),
                         OutlinedButton(
@@ -287,10 +285,7 @@ class PublicHeroSection extends StatelessWidget {
                             ),
                           ),
                           onPressed: onContactUs ??
-                              () => Navigator.pushNamed(
-                                    context,
-                                    AppRoutes.contact,
-                                  ),
+                              () => context.go(AppRoutes.contact),
                           child: const Text('Contact Us'),
                         ),
                       ],
@@ -524,7 +519,7 @@ class PricingPlanCard extends StatelessWidget {
           SizedBox(
             width: double.infinity,
             child: FilledButton(
-              onPressed: () => Navigator.pushNamed(context, AppRoutes.contact),
+              onPressed: () => context.go(AppRoutes.contact),
               child: const Text('Get Started'),
             ),
           ),
