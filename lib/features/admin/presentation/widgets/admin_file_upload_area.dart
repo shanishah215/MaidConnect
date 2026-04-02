@@ -87,7 +87,10 @@ class _AdminFileUploadAreaState extends State<AdminFileUploadArea> {
                   if (widget.acceptedFormats.isNotEmpty) ...<Widget>[
                     const SizedBox(height: 12),
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 4,
+                      ),
                       decoration: BoxDecoration(
                         color: const Color(0xFFE2E8F0),
                         borderRadius: BorderRadius.circular(20),
@@ -122,19 +125,29 @@ class _AdminFileUploadAreaState extends State<AdminFileUploadArea> {
               ),
               child: Row(
                 children: <Widget>[
-                  const Icon(Icons.insert_drive_file_outlined,
-                      size: 18, color: Color(0xFF6366F1)),
+                  const Icon(
+                    Icons.insert_drive_file_outlined,
+                    size: 18,
+                    color: Color(0xFF6366F1),
+                  ),
                   const SizedBox(width: 10),
                   Expanded(
                     child: Text(
                       name,
-                      style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500),
+                      style: const TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w500,
+                      ),
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
                   if (widget.onRemove != null)
                     IconButton(
-                      icon: const Icon(Icons.close, size: 16, color: Color(0xFF94A3B8)),
+                      icon: const Icon(
+                        Icons.close,
+                        size: 16,
+                        color: Color(0xFF94A3B8),
+                      ),
                       onPressed: () => widget.onRemove?.call(i),
                       padding: EdgeInsets.zero,
                       constraints: const BoxConstraints(),

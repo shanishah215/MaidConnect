@@ -94,7 +94,11 @@ class MaidProfileCard extends StatelessWidget {
                                 ),
                               ),
                               const SizedBox(width: 8),
-                              const Icon(Icons.verified_rounded, color: Color(0xFF10B981), size: 18),
+                              const Icon(
+                                Icons.verified_rounded,
+                                color: Color(0xFF10B981),
+                                size: 18,
+                              ),
                             ],
                           ),
                           const SizedBox(height: 4),
@@ -112,7 +116,9 @@ class MaidProfileCard extends StatelessWidget {
                       onPressed: onShortlistTap,
                       icon: Icon(
                         isShortlisted ? Icons.favorite : Icons.favorite_border,
-                        color: isShortlisted ? const Color(0xFFF43F5E) : const Color(0xFFCBD5E1),
+                        color: isShortlisted
+                            ? const Color(0xFFF43F5E)
+                            : const Color(0xFFCBD5E1),
                       ),
                       splashRadius: 24,
                     ),
@@ -123,10 +129,7 @@ class MaidProfileCard extends StatelessWidget {
                   maid.bio,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    color: Color(0xFF475569),
-                    height: 1.5,
-                  ),
+                  style: const TextStyle(color: Color(0xFF475569), height: 1.5),
                 ),
                 const SizedBox(height: 20),
                 Wrap(
@@ -149,8 +152,12 @@ class MaidProfileCard extends StatelessWidget {
                     _Badge(
                       icon: Icons.calendar_today_outlined,
                       label: _availabilityLabel(maid.availability),
-                      color: isAvailableNow ? const Color(0xFF10B981) : const Color(0xFF64748B),
-                      bgColor: isAvailableNow ? const Color(0xFFD1FAE5) : const Color(0xFFF1F5F9),
+                      color: isAvailableNow
+                          ? const Color(0xFF10B981)
+                          : const Color(0xFF64748B),
+                      bgColor: isAvailableNow
+                          ? const Color(0xFFD1FAE5)
+                          : const Color(0xFFF1F5F9),
                     ),
                   ],
                 ),
@@ -159,7 +166,14 @@ class MaidProfileCard extends StatelessWidget {
                 const SizedBox(height: 12),
                 Row(
                   children: [
-                    const Text('Top Skills: ', style: TextStyle(color: Color(0xFF94A3B8), fontSize: 13, fontWeight: FontWeight.w600)),
+                    const Text(
+                      'Top Skills: ',
+                      style: TextStyle(
+                        color: Color(0xFF94A3B8),
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
                     const SizedBox(width: 8),
                     Expanded(
                       child: Wrap(
@@ -167,15 +181,24 @@ class MaidProfileCard extends StatelessWidget {
                         runSpacing: 6,
                         children: maid.skills.take(4).map((skill) {
                           return Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 10,
+                              vertical: 4,
+                            ),
                             decoration: BoxDecoration(
                               color: const Color(0xFFF8FAFC),
-                              border: Border.all(color: const Color(0xFFE2E8F0)),
+                              border: Border.all(
+                                color: const Color(0xFFE2E8F0),
+                              ),
                               borderRadius: BorderRadius.circular(8),
                             ),
                             child: Text(
                               skill,
-                              style: const TextStyle(fontSize: 12, color: Color(0xFF334155), fontWeight: FontWeight.w600),
+                              style: const TextStyle(
+                                fontSize: 12,
+                                color: Color(0xFF334155),
+                                fontWeight: FontWeight.w600,
+                              ),
                             ),
                           );
                         }).toList(),

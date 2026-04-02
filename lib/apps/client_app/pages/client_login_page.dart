@@ -35,10 +35,11 @@ class _ClientLoginPageState extends State<ClientLoginPage> {
     setState(() => _isLoading = true);
 
     try {
-      final credentials = await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: _emailController.text.trim(),
-        password: _passwordController.text,
-      );
+      final credentials = await FirebaseAuth.instance
+          .signInWithEmailAndPassword(
+            email: _emailController.text.trim(),
+            password: _passwordController.text,
+          );
 
       // Verify if they are actually a Client before navigating
       final userDoc = await FirebaseFirestore.instance

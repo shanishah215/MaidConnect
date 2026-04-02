@@ -3,12 +3,14 @@ import 'package:google_fonts/google_fonts.dart';
 
 import 'router/app_router.dart';
 
+/// Root widget of the Maid Connect application
 class MaidConnectApp extends StatelessWidget {
+  /// Default constructor for MaidConnectApp
   const MaidConnectApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    // Configure global SaaS-style theme
+    // Configure global SaaS-style theme and typography
     final baseTextTheme = Typography.material2021(
       platform: Theme.of(context).platform,
     ).black;
@@ -16,6 +18,7 @@ class MaidConnectApp extends StatelessWidget {
       baseTextTheme,
     );
 
+    // Main application configuration with Material 3 and custom theme
     return MaterialApp.router(
       title: 'Maid Connect',
       debugShowCheckedModeBanner: false,

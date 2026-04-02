@@ -2,11 +2,16 @@ import 'package:cloud_firestore/cloud_firestore.dart'; // Add this
 import 'package:firebase_auth/firebase_auth.dart';
 import '../../domain/repositories/auth_repository.dart';
 
+/// Implementation of AuthRepository using Firebase Authentication and Firestore
 class AuthRepositoryImpl implements AuthRepository {
+  /// Instance of Firebase Authentication
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance; // Add this
+
+  /// Instance of Firebase Firestore for user data management
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   @override
+  /// Authenticates an admin with email and password
   Future<void> signInAdmin(String email, String password) async {
     await _firebaseAuth.signInWithEmailAndPassword(
       email: email.trim(),
@@ -15,6 +20,7 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
+  /// Authenticates a client with email and password
   Future<void> signInClient(String email, String password) async {
     await _firebaseAuth.signInWithEmailAndPassword(
       email: email.trim(),
@@ -23,6 +29,7 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
+  /// Registers a new client and creates their profile in Firestore
   Future<void> signUpClient(String email, String password) async {
     // 1. Create the user in Firebase Auth
     final userCredential = await _firebaseAuth.createUserWithEmailAndPassword(
@@ -42,10 +49,12 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
+  /// Signs out the currently authenticated user
   Future<void> signOut() async {
     await _firebaseAuth.signOut();
   }
 
   @override
+  /// Returns a stream of the current authentication state
   Stream<User?> get authStateChanges => _firebaseAuth.authStateChanges();
 }

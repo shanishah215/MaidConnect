@@ -31,7 +31,7 @@ class ResponsiveNavigationShell extends StatelessWidget {
     // Check if the current path starts with the route path to keep selection active on sub-pages
     final String location = GoRouterState.of(context).uri.path;
     if (route == '/' || route == '/client' || route == '/admin') {
-       return location == route;
+      return location == route;
     }
     return location.startsWith(route);
   }
@@ -78,14 +78,18 @@ class ResponsiveNavigationShell extends StatelessWidget {
               Expanded(
                 child: ListView(
                   padding: const EdgeInsets.symmetric(horizontal: 12),
-                  children: navItems.map((item) => _SidebarItem(
-                    item: item,
-                    isSelected: _isSelected(context, item.route),
-                    onTap: () {
-                      Navigator.pop(context); // close drawer
-                      _goTo(context, item.route);
-                    },
-                  )).toList(),
+                  children: navItems
+                      .map(
+                        (item) => _SidebarItem(
+                          item: item,
+                          isSelected: _isSelected(context, item.route),
+                          onTap: () {
+                            Navigator.pop(context); // close drawer
+                            _goTo(context, item.route);
+                          },
+                        ),
+                      )
+                      .toList(),
                 ),
               ),
             ],
@@ -156,17 +160,21 @@ class ResponsiveNavigationShell extends StatelessWidget {
                 Expanded(
                   child: ListView(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
-                    children: navItems.map((item) => _SidebarItem(
-                      item: item,
-                      isSelected: _isSelected(context, item.route),
-                      onTap: () => _goTo(context, item.route),
-                    )).toList(),
+                    children: navItems
+                        .map(
+                          (item) => _SidebarItem(
+                            item: item,
+                            isSelected: _isSelected(context, item.route),
+                            onTap: () => _goTo(context, item.route),
+                          ),
+                        )
+                        .toList(),
                   ),
                 ),
               ],
             ),
           ),
-          
+
           // Main Content Area
           Expanded(
             child: Column(
@@ -197,9 +205,7 @@ class ResponsiveNavigationShell extends StatelessWidget {
                   ),
                 ),
                 // Scrollable Body
-                Expanded(
-                  child: child,
-                ),
+                Expanded(child: child),
               ],
             ),
           ),
@@ -223,7 +229,7 @@ class _SidebarItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     return Padding(
       padding: const EdgeInsets.only(bottom: 4),
       child: Material(

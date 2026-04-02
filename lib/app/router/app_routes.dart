@@ -1,8 +1,4 @@
-enum RouteAccess {
-  public,
-  clientOnly,
-  adminOnly,
-}
+enum RouteAccess { public, clientOnly, adminOnly }
 
 class AppRoutes {
   AppRoutes._();
@@ -25,7 +21,8 @@ class AppRoutes {
   static const String adminDashboard = '/admin/dashboard';
   static const String maidProfileManagement = '/admin/maids';
   static const String adminMaidAdd = '/admin/maids/add';
-  static const String adminMaidEdit = '/admin/maids/edit'; // Will use path params
+  static const String adminMaidEdit =
+      '/admin/maids/edit'; // Will use path params
   static const String adminClients = '/admin/clients';
   static const String requestsManagement = '/admin/requests';
   static const String bulkUpload = '/admin/bulk-upload';

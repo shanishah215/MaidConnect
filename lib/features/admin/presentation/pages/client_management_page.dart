@@ -38,9 +38,13 @@ class _ClientManagementPageState extends State<ClientManagementPage> {
       if (query.isEmpty) {
         _filteredClients = AdminPortalStore.instance.clients;
       } else {
-        _filteredClients = AdminPortalStore.instance.clients.where((c) =>
-          c.name.toLowerCase().contains(query.toLowerCase()) ||
-          c.email.toLowerCase().contains(query.toLowerCase())).toList();
+        _filteredClients = AdminPortalStore.instance.clients
+            .where(
+              (c) =>
+                  c.name.toLowerCase().contains(query.toLowerCase()) ||
+                  c.email.toLowerCase().contains(query.toLowerCase()),
+            )
+            .toList();
       }
     });
   }
@@ -55,7 +59,9 @@ class _ClientManagementPageState extends State<ClientManagementPage> {
           // Header
           Text(
             'Client Management',
-            style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
+            style: Theme.of(
+              context,
+            ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
           ),
           const SizedBox(height: 32),
 
@@ -65,7 +71,11 @@ class _ClientManagementPageState extends State<ClientManagementPage> {
             hintText: 'Search by client name or email...',
             onChanged: _onSearch,
             trailing: [
-              IconButton(onPressed: () {}, icon: const Icon(Icons.filter_list), tooltip: 'Show Filters'),
+              IconButton(
+                onPressed: () {},
+                icon: const Icon(Icons.filter_list),
+                tooltip: 'Show Filters',
+              ),
             ],
           ),
           const SizedBox(height: 24),
@@ -81,45 +91,101 @@ class _ClientManagementPageState extends State<ClientManagementPage> {
               child: _isLoading
                   ? const Center(child: CircularProgressIndicator())
                   : _filteredClients.isEmpty
-                      ? const Center(child: Text('No clients found.'))
-                      : SingleChildScrollView(
-                          child: DataTable(
-                            horizontalMargin: 24,
-                            columnSpacing: 24,
-                            columns: const [
-                              DataColumn(label: Text('Name', style: TextStyle(fontWeight: FontWeight.w700))),
-                              DataColumn(label: Text('Email', style: TextStyle(fontWeight: FontWeight.w700))),
-                              DataColumn(label: Text('Phone', style: TextStyle(fontWeight: FontWeight.w700))),
-                              DataColumn(label: Text('Status', style: TextStyle(fontWeight: FontWeight.w700))),
-                              DataColumn(label: Text('Actions', style: TextStyle(fontWeight: FontWeight.w700))),
-                            ],
-                            rows: _filteredClients.map((client) {
-                              return DataRow(cells: [
-                                DataCell(Text(client.name, style: const TextStyle(fontWeight: FontWeight.w600))),
-                                DataCell(Text(client.email)),
-                                DataCell(Text(client.phone ?? '')),
-                                DataCell(AdminStatusChip(
-                                  label: client.status == AdminClientStatus.active ? 'Active' : 'Suspended',
-                                  color: client.status == AdminClientStatus.active ? const Color(0xFF10B981) : const Color(0xFFEF4444),
-                                )),
-                                DataCell(Row(
+                  ? const Center(child: Text('No clients found.'))
+                  : SingleChildScrollView(
+                      child: DataTable(
+                        horizontalMargin: 24,
+                        columnSpacing: 24,
+                        columns: const [
+                          DataColumn(
+                            label: Text(
+                              'Name',
+                              style: TextStyle(fontWeight: FontWeight.w700),
+                            ),
+                          ),
+                          DataColumn(
+                            label: Text(
+                              'Email',
+                              style: TextStyle(fontWeight: FontWeight.w700),
+                            ),
+                          ),
+                          DataColumn(
+                            label: Text(
+                              'Phone',
+                              style: TextStyle(fontWeight: FontWeight.w700),
+                            ),
+                          ),
+                          DataColumn(
+                            label: Text(
+                              'Status',
+                              style: TextStyle(fontWeight: FontWeight.w700),
+                            ),
+                          ),
+                          DataColumn(
+                            label: Text(
+                              'Actions',
+                              style: TextStyle(fontWeight: FontWeight.w700),
+                            ),
+                          ),
+                        ],
+                        rows: _filteredClients.map((client) {
+                          return DataRow(
+                            cells: [
+                              DataCell(
+                                Text(
+                                  client.name,
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ),
+                              DataCell(Text(client.email)),
+                              DataCell(Text(client.phone ?? '')),
+                              DataCell(
+                                AdminStatusChip(
+                                  label:
+                                      client.status == AdminClientStatus.active
+                                      ? 'Active'
+                                      : 'Suspended',
+                                  color:
+                                      client.status == AdminClientStatus.active
+                                      ? const Color(0xFF10B981)
+                                      : const Color(0xFFEF4444),
+                                ),
+                              ),
+                              DataCell(
+                                Row(
                                   children: [
                                     IconButton(
-                                      icon: const Icon(Icons.visibility_outlined, size: 20, color: Color(0xFF64748B)),
-                                      onPressed: () => AdminDialog.showSnack(context, 'Mock: View client details.'),
+                                      icon: const Icon(
+                                        Icons.visibility_outlined,
+                                        size: 20,
+                                        color: Color(0xFF64748B),
+                                      ),
+                                      onPressed: () => AdminDialog.showSnack(
+                                        context,
+                                        'Mock: View client details.',
+                                      ),
                                       tooltip: 'View Details',
                                     ),
                                     Switch(
-                                      value: client.status == AdminClientStatus.active,
-                                      onChanged: (v) => AdminDialog.showSnack(context, 'Mock: Account status toggled.'),
-                                      activeColor: const Color(0xFF10B981),
+                                      value:
+                                          client.status ==
+                                          AdminClientStatus.active,
+                                      onChanged: (v) => AdminDialog.showSnack(
+                                        context,
+                                        'Mock: Account status toggled.',
+                                      ),
+                                      activeThumbColor: const Color(0xFF10B981),
                                     ),
                                   ],
-                                )),
-                              ]);
-                            }).toList(),
-                          ),
-                        ),
+                                ),
+                              ),
+                            ],
+                          );
+                        }).toList(),
+                      ),
+                    ),
             ),
           ),
         ],

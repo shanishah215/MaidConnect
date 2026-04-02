@@ -27,45 +27,56 @@ class AdminPanelShell extends StatelessWidget {
   final Widget child;
 
   static const List<_NavSection> _sections = <_NavSection>[
-    _NavSection(title: 'MAIN', items: <AdminNavItem>[
-      AdminNavItem(
-        label: 'Dashboard',
-        route: AppRoutes.adminDashboard,
-        icon: Icons.grid_view_rounded,
-      ),
-    ]),
-    _NavSection(title: 'MANAGEMENT', items: <AdminNavItem>[
-      AdminNavItem(
-        label: 'Maid Profiles',
-        route: AppRoutes.maidProfileManagement,
-        icon: Icons.badge_outlined,
-      ),
-      AdminNavItem(
-        label: 'Clients',
-        route: AppRoutes.adminClients,
-        icon: Icons.people_outline_rounded,
-      ),
-      AdminNavItem(
-        label: 'Requests',
-        route: AppRoutes.requestsManagement,
-        icon: Icons.inbox_outlined,
-      ),
-    ]),
-    _NavSection(title: 'TOOLS', items: <AdminNavItem>[
-      AdminNavItem(
-        label: 'Bulk Upload',
-        route: AppRoutes.bulkUpload,
-        icon: Icons.upload_file_outlined,
-      ),
-    ]),
+    _NavSection(
+      title: 'MAIN',
+      items: <AdminNavItem>[
+        AdminNavItem(
+          label: 'Dashboard',
+          route: AppRoutes.adminDashboard,
+          icon: Icons.grid_view_rounded,
+        ),
+      ],
+    ),
+    _NavSection(
+      title: 'MANAGEMENT',
+      items: <AdminNavItem>[
+        AdminNavItem(
+          label: 'Maid Profiles',
+          route: AppRoutes.maidProfileManagement,
+          icon: Icons.badge_outlined,
+        ),
+        AdminNavItem(
+          label: 'Clients',
+          route: AppRoutes.adminClients,
+          icon: Icons.people_outline_rounded,
+        ),
+        AdminNavItem(
+          label: 'Requests',
+          route: AppRoutes.requestsManagement,
+          icon: Icons.inbox_outlined,
+        ),
+      ],
+    ),
+    _NavSection(
+      title: 'TOOLS',
+      items: <AdminNavItem>[
+        AdminNavItem(
+          label: 'Bulk Upload',
+          route: AppRoutes.bulkUpload,
+          icon: Icons.upload_file_outlined,
+        ),
+      ],
+    ),
   ];
 
   String _getTitle(BuildContext context) {
     final path = GoRouterState.of(context).uri.path;
-    if (path.startsWith(AppRoutes.maidProfileManagement)) return 'Maid Profiles';
+    if (path.startsWith(AppRoutes.maidProfileManagement))
+      return 'Maid Profiles';
     if (path.startsWith(AppRoutes.adminMaidAdd)) return 'Add Maid';
     if (path.startsWith(AppRoutes.adminClients)) return 'Clients';
-    if (path.startsWith(AppRoutes.requestsManagement)) return 'Requests & Inquiries';
+    if (path.startsWith(AppRoutes.requestsManagement))
+      return 'Requests & Inquiries';
     if (path.startsWith(AppRoutes.bulkUpload)) return 'Bulk Upload';
     return 'Admin';
   }
@@ -151,12 +162,18 @@ class _DesktopShell extends StatelessWidget {
                         padding: const EdgeInsets.all(8),
                         decoration: BoxDecoration(
                           gradient: const LinearGradient(
-                            colors: <Color>[Color(0xFF6366F1), Color(0xFF2563EB)],
+                            colors: <Color>[
+                              Color(0xFF6366F1),
+                              Color(0xFF2563EB),
+                            ],
                           ),
                           borderRadius: BorderRadius.circular(10),
                         ),
-                        child: const Icon(Icons.cleaning_services_rounded,
-                            color: Colors.white, size: 18),
+                        child: const Icon(
+                          Icons.cleaning_services_rounded,
+                          color: Colors.white,
+                          size: 18,
+                        ),
                       ),
                       const SizedBox(width: 10),
                       Column(
@@ -172,7 +189,10 @@ class _DesktopShell extends StatelessWidget {
                             ),
                           ),
                           Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 6,
+                              vertical: 1,
+                            ),
                             decoration: BoxDecoration(
                               color: const Color(0xFF6366F1).withOpacity(0.3),
                               borderRadius: BorderRadius.circular(4),
@@ -212,10 +232,12 @@ class _DesktopShell extends StatelessWidget {
                               ),
                             ),
                           ),
-                          ...sec.items.map((AdminNavItem item) => _SidebarNavItem(
-                            item: item,
-                            isSelected: isSelected(item.route),
-                          )),
+                          ...sec.items.map(
+                            (AdminNavItem item) => _SidebarNavItem(
+                              item: item,
+                              isSelected: isSelected(item.route),
+                            ),
+                          ),
                           const SizedBox(height: 8),
                         ],
                       );
@@ -237,14 +259,20 @@ class _DesktopShell extends StatelessWidget {
                         height: 36,
                         decoration: BoxDecoration(
                           gradient: const LinearGradient(
-                            colors: <Color>[Color(0xFF6366F1), Color(0xFF2563EB)],
+                            colors: <Color>[
+                              Color(0xFF6366F1),
+                              Color(0xFF2563EB),
+                            ],
                           ),
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: const Center(
                           child: Text(
                             'A',
-                            style: TextStyle(color: Colors.white, fontWeight: FontWeight.w800),
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w800,
+                            ),
                           ),
                         ),
                       ),
@@ -263,7 +291,10 @@ class _DesktopShell extends StatelessWidget {
                             ),
                             Text(
                               'admin@maidconnect.lk',
-                              style: TextStyle(color: Color(0xFF94A3B8), fontSize: 11),
+                              style: TextStyle(
+                                color: Color(0xFF94A3B8),
+                                fontSize: 11,
+                              ),
                               overflow: TextOverflow.ellipsis,
                             ),
                           ],
@@ -271,7 +302,11 @@ class _DesktopShell extends StatelessWidget {
                       ),
                       IconButton(
                         onPressed: onSignOut,
-                        icon: const Icon(Icons.logout, color: Color(0xFF64748B), size: 18),
+                        icon: const Icon(
+                          Icons.logout,
+                          color: Color(0xFF64748B),
+                          size: 18,
+                        ),
                         tooltip: 'Sign out',
                         padding: EdgeInsets.zero,
                         constraints: const BoxConstraints(),
@@ -319,7 +354,10 @@ class _DesktopShell extends StatelessWidget {
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8),
                           ),
-                          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 14,
+                            vertical: 8,
+                          ),
                         ),
                       ),
                     ],
@@ -392,8 +430,11 @@ class _MobileShell extends StatelessWidget {
                         ),
                         borderRadius: BorderRadius.circular(8),
                       ),
-                      child: const Icon(Icons.cleaning_services_rounded,
-                          color: Colors.white, size: 16),
+                      child: const Icon(
+                        Icons.cleaning_services_rounded,
+                        color: Colors.white,
+                        size: 16,
+                      ),
                     ),
                     const SizedBox(width: 10),
                     const Text(
@@ -407,25 +448,29 @@ class _MobileShell extends StatelessWidget {
                   ],
                 ),
               ),
-              ...sections.expand((_NavSection sec) => <Widget>[
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(12, 8, 12, 4),
-                  child: Text(
-                    sec.title,
-                    style: const TextStyle(
-                      color: Color(0xFF475569),
-                      fontSize: 10,
-                      fontWeight: FontWeight.w700,
-                      letterSpacing: 1.2,
+              ...sections.expand(
+                (_NavSection sec) => <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(12, 8, 12, 4),
+                    child: Text(
+                      sec.title,
+                      style: const TextStyle(
+                        color: Color(0xFF475569),
+                        fontSize: 10,
+                        fontWeight: FontWeight.w700,
+                        letterSpacing: 1.2,
+                      ),
                     ),
                   ),
-                ),
-                ...sec.items.map((AdminNavItem item) => _SidebarNavItem(
-                  item: item,
-                  isSelected: isSelected(item.route),
-                  onTap: () => Navigator.pop(context),
-                )),
-              ]),
+                  ...sec.items.map(
+                    (AdminNavItem item) => _SidebarNavItem(
+                      item: item,
+                      isSelected: isSelected(item.route),
+                      onTap: () => Navigator.pop(context),
+                    ),
+                  ),
+                ],
+              ),
             ],
           ),
         ),
@@ -472,8 +517,8 @@ class _SidebarNavItemState extends State<_SidebarNavItem> {
             color: widget.isSelected
                 ? const Color(0xFF1E293B)
                 : _hovered
-                    ? const Color(0xFF1E293B).withOpacity(0.5)
-                    : Colors.transparent,
+                ? const Color(0xFF1E293B).withOpacity(0.5)
+                : Colors.transparent,
           ),
           child: Row(
             children: <Widget>[
@@ -505,8 +550,9 @@ class _SidebarNavItemState extends State<_SidebarNavItem> {
                 widget.item.label,
                 style: TextStyle(
                   fontSize: 14,
-                  fontWeight:
-                      widget.isSelected ? FontWeight.w600 : FontWeight.w400,
+                  fontWeight: widget.isSelected
+                      ? FontWeight.w600
+                      : FontWeight.w400,
                   color: widget.isSelected
                       ? Colors.white
                       : const Color(0xFF94A3B8),

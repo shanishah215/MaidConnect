@@ -28,9 +28,19 @@ class AdminSearchBar extends StatelessWidget {
               style: const TextStyle(fontSize: 14),
               decoration: InputDecoration(
                 hintText: hintText,
-                hintStyle: const TextStyle(color: Color(0xFF94A3B8), fontSize: 14),
-                prefixIcon: const Icon(Icons.search, size: 18, color: Color(0xFF94A3B8)),
-                contentPadding: const EdgeInsets.symmetric(vertical: 0, horizontal: 16),
+                hintStyle: const TextStyle(
+                  color: Color(0xFF94A3B8),
+                  fontSize: 14,
+                ),
+                prefixIcon: const Icon(
+                  Icons.search,
+                  size: 18,
+                  color: Color(0xFF94A3B8),
+                ),
+                contentPadding: const EdgeInsets.symmetric(
+                  vertical: 0,
+                  horizontal: 16,
+                ),
                 filled: true,
                 fillColor: const Color(0xFFF8FAFC),
                 enabledBorder: OutlineInputBorder(

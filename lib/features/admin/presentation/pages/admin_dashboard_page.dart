@@ -55,9 +55,9 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
               children: [
                 Text(
                   'Overview',
-                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.w700,
-                  ),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
                 ),
                 Text(
                   'Welcome back to the MaidConnect admin panel.',
@@ -124,16 +124,10 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Recent Inquiries
-              Expanded(
-                flex: 2,
-                child: _RecentInquiriesTable(),
-              ),
+              Expanded(flex: 2, child: _RecentInquiriesTable()),
               const SizedBox(width: 32),
               // Quick Actions or Status
-              Expanded(
-                flex: 1,
-                child: _QuickActionsCard(),
-              ),
+              Expanded(flex: 1, child: _QuickActionsCard()),
             ],
           ),
         const SizedBox(height: 48),
@@ -183,38 +177,72 @@ class _RecentInquiriesTable extends StatelessWidget {
                 children: [
                   Padding(
                     padding: EdgeInsets.symmetric(vertical: 12),
-                    child: Text('Client', style: TextStyle(color: Color(0xFF64748B), fontSize: 13, fontWeight: FontWeight.w600)),
+                    child: Text(
+                      'Client',
+                      style: TextStyle(
+                        color: Color(0xFF64748B),
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
                   ),
                   Padding(
                     padding: EdgeInsets.symmetric(vertical: 12),
-                    child: Text('Maid', style: TextStyle(color: Color(0xFF64748B), fontSize: 13, fontWeight: FontWeight.w600)),
+                    child: Text(
+                      'Maid',
+                      style: TextStyle(
+                        color: Color(0xFF64748B),
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
                   ),
                   Padding(
                     padding: EdgeInsets.symmetric(vertical: 12),
-                    child: Text('Status', style: TextStyle(color: Color(0xFF64748B), fontSize: 13, fontWeight: FontWeight.w600)),
+                    child: Text(
+                      'Status',
+                      style: TextStyle(
+                        color: Color(0xFF64748B),
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
                   ),
                 ],
               ),
               // Rows
-              ...inquiries.map((inq) => TableRow(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 12),
-                    child: Text(inq.clientName, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 12),
-                    child: Text(inq.maidName, style: const TextStyle(fontSize: 14)),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 12),
-                    child: AdminStatusChip(
-                      label: inq.status.name.substring(0, 1).toUpperCase() + inq.status.name.substring(1),
-                      color: _getStatusColor(inq.status),
+              ...inquiries.map(
+                (inq) => TableRow(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      child: Text(
+                        inq.clientName,
+                        style: const TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
                     ),
-                  ),
-                ],
-              )),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      child: Text(
+                        inq.maidName,
+                        style: const TextStyle(fontSize: 14),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      child: AdminStatusChip(
+                        label:
+                            inq.status.name.substring(0, 1).toUpperCase() +
+                            inq.status.name.substring(1),
+                        color: _getStatusColor(inq.status),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ],
           ),
         ],
@@ -224,11 +252,16 @@ class _RecentInquiriesTable extends StatelessWidget {
 
   Color _getStatusColor(dynamic status) {
     switch (status.toString()) {
-      case 'InquiryStatus.pending': return const Color(0xFFF59E0B);
-      case 'InquiryStatus.approved': return const Color(0xFF10B981);
-      case 'InquiryStatus.rejected': return const Color(0xFFEF4444);
-      case 'InquiryStatus.assigned': return const Color(0xFF6366F1);
-      default: return const Color(0xFF94A3B8);
+      case 'InquiryStatus.pending':
+        return const Color(0xFFF59E0B);
+      case 'InquiryStatus.approved':
+        return const Color(0xFF10B981);
+      case 'InquiryStatus.rejected':
+        return const Color(0xFFEF4444);
+      case 'InquiryStatus.assigned':
+        return const Color(0xFF6366F1);
+      default:
+        return const Color(0xFF94A3B8);
     }
   }
 }
@@ -247,7 +280,11 @@ class _QuickActionsCard extends StatelessWidget {
         children: [
           const Text(
             'Quick Actions',
-            style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 16),
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.w700,
+              fontSize: 16,
+            ),
           ),
           const SizedBox(height: 24),
           _ActionButton(
@@ -269,7 +306,11 @@ class _QuickActionsCard extends StatelessWidget {
 }
 
 class _ActionButton extends StatelessWidget {
-  const _ActionButton({required this.label, required this.icon, required this.onPressed});
+  const _ActionButton({
+    required this.label,
+    required this.icon,
+    required this.onPressed,
+  });
   final String label;
   final IconData icon;
   final VoidCallback onPressed;
@@ -290,7 +331,14 @@ class _ActionButton extends StatelessWidget {
           children: [
             Icon(icon, color: Colors.white, size: 20),
             const SizedBox(width: 12),
-            Text(label, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 14)),
+            Text(
+              label,
+              style: const TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.w600,
+                fontSize: 14,
+              ),
+            ),
             const Spacer(),
             Icon(Icons.chevron_right, color: Colors.grey[500], size: 16),
           ],

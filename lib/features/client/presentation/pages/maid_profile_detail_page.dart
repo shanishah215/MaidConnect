@@ -134,13 +134,13 @@ class _MaidProfileDetailPageState extends State<MaidProfileDetailPage> {
                         onPressed: () async {
                           final messenger = ScaffoldMessenger.of(context);
                           final navigator = Navigator.of(context);
-                          
+
                           await store.createRequest(
                             maid: maid,
                             type: _type,
                             notes: _notesController.text.trim(),
                           );
-                          
+
                           messenger.showSnackBar(
                             const SnackBar(
                               content: Text('Request submitted successfully.'),

@@ -7,35 +7,62 @@ class AdminRepositoryImpl implements AdminRepository {
 
   @override
   Future<List<AdminMaidProfile>> getMaidProfiles() async {
-    final snapshot = await _firestore.collection('maids').orderBy('createdAt', descending: true).get();
-    return snapshot.docs.map((doc) => AdminMaidProfile.fromMap(doc.data(), doc.id)).toList();
+    final snapshot = await _firestore
+        .collection('maids')
+        .orderBy('createdAt', descending: true)
+        .get();
+    return snapshot.docs
+        .map((doc) => AdminMaidProfile.fromMap(doc.data(), doc.id))
+        .toList();
   }
 
   @override
   Stream<List<AdminMaidProfile>> getMaidProfilesStream() {
-    return _firestore.collection('maids').orderBy('createdAt', descending: true).snapshots().map((snapshot) {
-      return snapshot.docs.map((doc) => AdminMaidProfile.fromMap(doc.data(), doc.id)).toList();
-    });
+    return _firestore
+        .collection('maids')
+        .orderBy('createdAt', descending: true)
+        .snapshots()
+        .map((snapshot) {
+          return snapshot.docs
+              .map((doc) => AdminMaidProfile.fromMap(doc.data(), doc.id))
+              .toList();
+        });
   }
 
   @override
   Future<List<AdminClient>> getClients() async {
     // We fetch clients from the 'users' collection where role is 'client'
-    final snapshot = await _firestore.collection('users').where('role', isEqualTo: 'client').get();
-    return snapshot.docs.map((doc) => AdminClient.fromMap(doc.data(), doc.id)).toList();
+    final snapshot = await _firestore
+        .collection('users')
+        .where('role', isEqualTo: 'client')
+        .get();
+    return snapshot.docs
+        .map((doc) => AdminClient.fromMap(doc.data(), doc.id))
+        .toList();
   }
 
   @override
   Future<List<ClientInquiry>> getInquiries() async {
-    final snapshot = await _firestore.collection('inquiries').orderBy('createdAt', descending: true).get();
-    return snapshot.docs.map((doc) => ClientInquiry.fromMap(doc.data(), doc.id)).toList();
+    final snapshot = await _firestore
+        .collection('inquiries')
+        .orderBy('createdAt', descending: true)
+        .get();
+    return snapshot.docs
+        .map((doc) => ClientInquiry.fromMap(doc.data(), doc.id))
+        .toList();
   }
 
   @override
   Stream<List<ClientInquiry>> getInquiriesStream() {
-    return _firestore.collection('inquiries').orderBy('createdAt', descending: true).snapshots().map((snapshot) {
-      return snapshot.docs.map((doc) => ClientInquiry.fromMap(doc.data(), doc.id)).toList();
-    });
+    return _firestore
+        .collection('inquiries')
+        .orderBy('createdAt', descending: true)
+        .snapshots()
+        .map((snapshot) {
+          return snapshot.docs
+              .map((doc) => ClientInquiry.fromMap(doc.data(), doc.id))
+              .toList();
+        });
   }
 
   @override
@@ -43,8 +70,15 @@ class AdminRepositoryImpl implements AdminRepository {
     // Batch fetch counts for analytics
     final maidsCount = await _firestore.collection('maids').count().get();
     final usersCount = await _firestore.collection('users').count().get();
-    final inquiriesCount = await _firestore.collection('inquiries').count().get();
-    final pendingCount = await _firestore.collection('inquiries').where('status', isEqualTo: 'pending').count().get();
+    final inquiriesCount = await _firestore
+        .collection('inquiries')
+        .count()
+        .get();
+    final pendingCount = await _firestore
+        .collection('inquiries')
+        .where('status', isEqualTo: 'pending')
+        .count()
+        .get();
 
     return AnalyticsSnapshot(
       totalUsers: usersCount.count ?? 0,
@@ -73,7 +107,11 @@ class AdminRepositoryImpl implements AdminRepository {
   }
 
   @override
-  Future<void> updateInquiryStatus(String id, InquiryStatus status, {String? assignedTo}) async {
+  Future<void> updateInquiryStatus(
+    String id,
+    InquiryStatus status, {
+    String? assignedTo,
+  }) async {
     final Map<String, dynamic> data = {'status': status.name};
     if (assignedTo != null) {
       data['assignedTo'] = assignedTo;
@@ -105,8 +143,16 @@ final List<AdminMaidProfile> _seedMaids = <AdminMaidProfile>[
     monthlyRate: 550,
     createdAt: DateTime.parse('2024-01-15'),
     documents: <MaidDocument>[
-      MaidDocument(name: 'Passport_Anita.pdf', type: AdminMaidDocType.passport, uploadedAt: DateTime.parse('2024-01-15')),
-      MaidDocument(name: 'Medical_Cert.pdf', type: AdminMaidDocType.medicalCert, uploadedAt: DateTime.parse('2024-01-16')),
+      MaidDocument(
+        name: 'Passport_Anita.pdf',
+        type: AdminMaidDocType.passport,
+        uploadedAt: DateTime.parse('2024-01-15'),
+      ),
+      MaidDocument(
+        name: 'Medical_Cert.pdf',
+        type: AdminMaidDocType.medicalCert,
+        uploadedAt: DateTime.parse('2024-01-16'),
+      ),
     ],
   ),
   AdminMaidProfile(
@@ -122,9 +168,21 @@ final List<AdminMaidProfile> _seedMaids = <AdminMaidProfile>[
     monthlyRate: 680,
     createdAt: DateTime.parse('2023-11-03'),
     documents: <MaidDocument>[
-      MaidDocument(name: 'Passport_Maya.pdf', type: AdminMaidDocType.passport, uploadedAt: DateTime.parse('2023-11-03')),
-      MaidDocument(name: 'Work_Permit.pdf', type: AdminMaidDocType.workPermit, uploadedAt: DateTime.parse('2023-11-04')),
-      MaidDocument(name: 'Reference_Letter.pdf', type: AdminMaidDocType.reference, uploadedAt: DateTime.parse('2023-11-05')),
+      MaidDocument(
+        name: 'Passport_Maya.pdf',
+        type: AdminMaidDocType.passport,
+        uploadedAt: DateTime.parse('2023-11-03'),
+      ),
+      MaidDocument(
+        name: 'Work_Permit.pdf',
+        type: AdminMaidDocType.workPermit,
+        uploadedAt: DateTime.parse('2023-11-04'),
+      ),
+      MaidDocument(
+        name: 'Reference_Letter.pdf',
+        type: AdminMaidDocType.reference,
+        uploadedAt: DateTime.parse('2023-11-05'),
+      ),
     ],
   ),
 ];

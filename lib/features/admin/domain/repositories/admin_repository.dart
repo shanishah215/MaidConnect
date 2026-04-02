@@ -14,5 +14,9 @@ abstract class AdminRepository {
   Future<void> deleteMaidProfile(String id);
 
   // Inquiry Management
-  Future<void> updateInquiryStatus(String id, InquiryStatus status, {String? assignedTo});
+  Future<void> updateInquiryStatus(
+    String id,
+    InquiryStatus status, {
+    String? assignedTo,
+  });
 }

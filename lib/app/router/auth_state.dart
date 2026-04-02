@@ -7,7 +7,7 @@ import '../../shared/domain/entities/user_role.dart';
 class AuthState extends ChangeNotifier {
   AuthState._() {
     FirebaseAuth.instance.authStateChanges().listen((User? user) async {
-      _isInitialising = true; 
+      _isInitialising = true;
       notifyListeners();
 
       if (user == null) {
@@ -24,9 +24,8 @@ class AuthState extends ChangeNotifier {
             .collection('users')
             .doc(user.uid)
             .get(const GetOptions(source: Source.serverAndCache));
-        
+
         final role = doc.data()?['role'] as String?;
-        print('User Logged In: ${user.email}, Role: $role'); 
 
         if (role == 'admin') {
           _adminAuthenticated = true;
@@ -36,8 +35,7 @@ class AuthState extends ChangeNotifier {
           _adminAuthenticated = false;
         }
       } catch (e) {
-        print('Error fetching role: $e'); 
-        _clientAuthenticated = true; 
+        _clientAuthenticated = true;
         _adminAuthenticated = false;
       }
 

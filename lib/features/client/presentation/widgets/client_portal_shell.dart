@@ -8,13 +8,10 @@ import '../../../../shared/presentation/widgets/responsive_navigation_shell.dart
 /// Navigation shell for the Client Portal.
 /// Sign-out redirects to /client/login — strictly within the client module.
 class ClientPortalShell extends StatelessWidget {
-  const ClientPortalShell({
-    super.key,
-    required this.child,
-  });
+  const ClientPortalShell({super.key, required this.child});
 
   final Widget child;
-  
+
   static final List<NavItem> _nav = <NavItem>[
     const NavItem(
       label: 'Dashboard',

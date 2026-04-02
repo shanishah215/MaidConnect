@@ -45,7 +45,8 @@ class _MaidManagementPageState extends State<MaidManagementPage> {
     final confirmed = await AdminDialog.confirm(
       context,
       title: 'Delete Maid Profile',
-      message: 'Are you sure you want to delete ${maid.name}? This action cannot be undone.',
+      message:
+          'Are you sure you want to delete ${maid.name}? This action cannot be undone.',
       confirmLabel: 'Delete',
     );
 
@@ -72,7 +73,9 @@ class _MaidManagementPageState extends State<MaidManagementPage> {
             children: [
               Text(
                 'Maid Profile Management',
-                style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
+                style: Theme.of(
+                  context,
+                ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
               ),
               const Spacer(),
               FilledButton.icon(
@@ -110,45 +113,97 @@ class _MaidManagementPageState extends State<MaidManagementPage> {
               child: _isLoading
                   ? const Center(child: CircularProgressIndicator())
                   : _filteredMaids.isEmpty
-                      ? const Center(child: Text('No profiles found Match search.'))
-                      : SingleChildScrollView(
-                          child: DataTable(
-                            horizontalMargin: 24,
-                            columnSpacing: 24,
-                            columns: const [
-                              DataColumn(label: Text('Name', style: TextStyle(fontWeight: FontWeight.w700))),
-                              DataColumn(label: Text('Nationality', style: TextStyle(fontWeight: FontWeight.w700))),
-                              DataColumn(label: Text('Experience', style: TextStyle(fontWeight: FontWeight.w700))),
-                              DataColumn(label: Text('Status', style: TextStyle(fontWeight: FontWeight.w700))),
-                              DataColumn(label: Text('Actions', style: TextStyle(fontWeight: FontWeight.w700))),
-                            ],
-                            rows: _filteredMaids.map((maid) {
-                              return DataRow(cells: [
-                                DataCell(Text(maid.name, style: const TextStyle(fontWeight: FontWeight.w600))),
-                                DataCell(Text(maid.nationality)),
-                                DataCell(Text('${maid.experienceYears} Years')),
-                                DataCell(AdminStatusChip(
-                                  label: _getStatusLabel(maid.availabilityStatus),
-                                  color: _getStatusColor(maid.availabilityStatus),
-                                )),
-                                DataCell(Row(
+                  ? const Center(child: Text('No profiles found Match search.'))
+                  : SingleChildScrollView(
+                      child: DataTable(
+                        horizontalMargin: 24,
+                        columnSpacing: 24,
+                        columns: const [
+                          DataColumn(
+                            label: Text(
+                              'Name',
+                              style: TextStyle(fontWeight: FontWeight.w700),
+                            ),
+                          ),
+                          DataColumn(
+                            label: Text(
+                              'Nationality',
+                              style: TextStyle(fontWeight: FontWeight.w700),
+                            ),
+                          ),
+                          DataColumn(
+                            label: Text(
+                              'Experience',
+                              style: TextStyle(fontWeight: FontWeight.w700),
+                            ),
+                          ),
+                          DataColumn(
+                            label: Text(
+                              'Status',
+                              style: TextStyle(fontWeight: FontWeight.w700),
+                            ),
+                          ),
+                          DataColumn(
+                            label: Text(
+                              'Actions',
+                              style: TextStyle(fontWeight: FontWeight.w700),
+                            ),
+                          ),
+                        ],
+                        rows: _filteredMaids.map((maid) {
+                          return DataRow(
+                            cells: [
+                              DataCell(
+                                Text(
+                                  maid.name,
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ),
+                              DataCell(Text(maid.nationality)),
+                              DataCell(Text('${maid.experienceYears} Years')),
+                              DataCell(
+                                AdminStatusChip(
+                                  label: _getStatusLabel(
+                                    maid.availabilityStatus,
+                                  ),
+                                  color: _getStatusColor(
+                                    maid.availabilityStatus,
+                                  ),
+                                ),
+                              ),
+                              DataCell(
+                                Row(
                                   children: [
                                     IconButton(
-                                      icon: const Icon(Icons.edit_outlined, size: 20, color: Color(0xFF64748B)),
-                                      onPressed: () => context.go('${AppRoutes.adminMaidEdit}/${maid.id}'),
+                                      icon: const Icon(
+                                        Icons.edit_outlined,
+                                        size: 20,
+                                        color: Color(0xFF64748B),
+                                      ),
+                                      onPressed: () => context.go(
+                                        '${AppRoutes.adminMaidEdit}/${maid.id}',
+                                      ),
                                       tooltip: 'Edit',
                                     ),
                                     IconButton(
-                                      icon: const Icon(Icons.delete_outline, size: 20, color: Color(0xFFEF4444)),
+                                      icon: const Icon(
+                                        Icons.delete_outline,
+                                        size: 20,
+                                        color: Color(0xFFEF4444),
+                                      ),
                                       onPressed: () => _deleteMaid(maid),
                                       tooltip: 'Delete',
                                     ),
                                   ],
-                                )),
-                              ]);
-                            }).toList(),
-                          ),
-                        ),
+                                ),
+                              ),
+                            ],
+                          );
+                        }).toList(),
+                      ),
+                    ),
             ),
           ),
         ],
@@ -163,8 +218,10 @@ class _MaidManagementPageState extends State<MaidManagementPage> {
   }
 
   Color _getStatusColor(AdminMaidAvailability status) {
-    if (status == AdminMaidAvailability.available) return const Color(0xFF10B981);
-    if (status == AdminMaidAvailability.unavailable) return const Color(0xFFEF4444);
+    if (status == AdminMaidAvailability.available)
+      return const Color(0xFF10B981);
+    if (status == AdminMaidAvailability.unavailable)
+      return const Color(0xFFEF4444);
     return const Color(0xFFF59E0B);
   }
 }

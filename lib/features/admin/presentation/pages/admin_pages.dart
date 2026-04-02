@@ -23,9 +23,9 @@ class AdminPages {
   static Widget bulkUpload() => const BulkUploadPage();
 
   static Widget analyticsDashboard() => const Center(
-        child: Text(
-          'Analytics Detailed View - Coming Soon',
-          style: TextStyle(fontSize: 18, color: Color(0xFF64748B)),
-        ),
-      );
+    child: Text(
+      'Analytics Detailed View - Coming Soon',
+      style: TextStyle(fontSize: 18, color: Color(0xFF64748B)),
+    ),
+  );
 }

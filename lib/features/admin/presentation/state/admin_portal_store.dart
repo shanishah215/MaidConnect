@@ -29,12 +29,12 @@ class AdminPortalStore extends ChangeNotifier {
   // ── Load ───────────────────────────────────────────────────────────────────
   Future<void> ensureLoaded() async {
     if (_loaded) return;
-    
+
     _maids = await _repo.getMaidProfiles();
     _clients = await _repo.getClients();
     _inquiries = await _repo.getInquiries();
     _analytics = await _repo.getAnalytics();
-    
+
     _maidsSub?.cancel();
     _maidsSub = _repo.getMaidProfilesStream().listen((list) {
       _maids = list;
@@ -100,7 +100,11 @@ class AdminPortalStore extends ChangeNotifier {
   }
 
   Future<void> assignInquiry(String id, String maidName) async {
-    await _repo.updateInquiryStatus(id, InquiryStatus.assigned, assignedTo: maidName);
+    await _repo.updateInquiryStatus(
+      id,
+      InquiryStatus.assigned,
+      assignedTo: maidName,
+    );
     final inq = _inquiries.firstWhere((i) => i.id == id);
     inq.status = InquiryStatus.assigned;
     inq.assignedTo = maidName;
@@ -117,10 +121,12 @@ class AdminPortalStore extends ChangeNotifier {
     if (query.isEmpty) return _maids;
     final q = query.toLowerCase();
     return _maids
-        .where((m) =>
-            m.name.toLowerCase().contains(q) ||
-            m.nationality.toLowerCase().contains(q) ||
-            m.skills.any((s) => s.toLowerCase().contains(q)))
+        .where(
+          (m) =>
+              m.name.toLowerCase().contains(q) ||
+              m.nationality.toLowerCase().contains(q) ||
+              m.skills.any((s) => s.toLowerCase().contains(q)),
+        )
         .toList();
   }
 

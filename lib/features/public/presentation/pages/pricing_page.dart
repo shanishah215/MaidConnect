@@ -97,7 +97,9 @@ class _PlanCard extends StatelessWidget {
         color: isHighlighted ? const Color(0xFFEEF5FF) : Colors.white,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: isHighlighted ? const Color(0xFF2F80ED) : const Color(0xFFE5EAF3),
+          color: isHighlighted
+              ? const Color(0xFF2F80ED)
+              : const Color(0xFFE5EAF3),
           width: isHighlighted ? 1.4 : 1,
         ),
       ),

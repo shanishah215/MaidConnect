@@ -11,7 +11,7 @@ class BulkUploadPage extends StatefulWidget {
 }
 
 class _BulkUploadPageState extends State<BulkUploadPage> {
-  List<String> _uploadedFiles = [];
+  final List<String> _uploadedFiles = [];
   bool _isProcessing = false;
   double _progress = 0.0;
 
@@ -23,7 +23,7 @@ class _BulkUploadPageState extends State<BulkUploadPage> {
 
   void _process() async {
     if (_uploadedFiles.isEmpty) return;
-    
+
     setState(() {
       _isProcessing = true;
       _progress = 0.0;
@@ -41,7 +41,9 @@ class _BulkUploadPageState extends State<BulkUploadPage> {
       _uploadedFiles.clear();
     });
 
-    if (mounted) AdminDialog.showSnack(context, 'Successfully imported 42 maid profiles.');
+    if (mounted) {
+      AdminDialog.showSnack(context, 'Successfully imported 42 maid profiles.');
+    }
   }
 
   @override
@@ -55,11 +57,16 @@ class _BulkUploadPageState extends State<BulkUploadPage> {
             children: [
               Text(
                 'Bulk Import Maids',
-                style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
+                style: Theme.of(
+                  context,
+                ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
               ),
               const Spacer(),
               TextButton.icon(
-                onPressed: () => AdminDialog.showSnack(context, 'Mock: Downloaded Excel Template.'),
+                onPressed: () => AdminDialog.showSnack(
+                  context,
+                  'Mock: Downloaded Excel Template.',
+                ),
                 icon: const Icon(Icons.download),
                 label: const Text('Download Template'),
               ),
@@ -69,7 +76,8 @@ class _BulkUploadPageState extends State<BulkUploadPage> {
 
           AdminFormSection(
             title: 'Import CSV/Excel',
-            description: 'Upload your maid profiles in bulk. Ensure files follow the required template.',
+            description:
+                'Upload your maid profiles in bulk. Ensure files follow the required template.',
             child: Column(
               children: [
                 AdminFileUploadArea(
@@ -79,7 +87,9 @@ class _BulkUploadPageState extends State<BulkUploadPage> {
                   acceptedFormats: '.xlsx, .csv',
                   uploadedFileNames: _uploadedFiles,
                   onTap: _isProcessing ? null : _onUpload,
-                  onRemove: _isProcessing ? null : (i) => setState(() => _uploadedFiles.removeAt(i)),
+                  onRemove: _isProcessing
+                      ? null
+                      : (i) => setState(() => _uploadedFiles.removeAt(i)),
                 ),
                 if (_isProcessing) ...[
                   const SizedBox(height: 24),
@@ -89,14 +99,21 @@ class _BulkUploadPageState extends State<BulkUploadPage> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Text('Processing profiles...', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 13)),
-                          Text('${(_progress * 100).round()}%', style: const TextStyle(fontWeight: FontWeight.bold)),
+                          const Text(
+                            'Processing profiles...',
+                            style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 13,
+                            ),
+                          ),
+                          Text(
+                            '${(_progress * 100).round()}%',
+                            style: const TextStyle(fontWeight: FontWeight.bold),
+                          ),
                         ],
                       ),
                       const SizedBox(height: 8),
-                      LinearProgressIndicator(
-                        value: _progress,
-                      ),
+                      LinearProgressIndicator(value: _progress),
                     ],
                   ),
                 ],
@@ -104,26 +121,40 @@ class _BulkUploadPageState extends State<BulkUploadPage> {
                 SizedBox(
                   width: double.infinity,
                   child: FilledButton(
-                    onPressed: (_uploadedFiles.isEmpty || _isProcessing) ? null : _process,
-                    child: Text(_isProcessing ? 'Processing...' : 'Import Data'),
+                    onPressed: (_uploadedFiles.isEmpty || _isProcessing)
+                        ? null
+                        : _process,
+                    child: Text(
+                      _isProcessing ? 'Processing...' : 'Import Data',
+                    ),
                   ),
                 ),
               ],
             ),
           ),
           const SizedBox(height: 24),
-          
+
           AdminFormSection(
             title: 'Instructions',
             description: 'Help for bulk importing data.',
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: const [
-                _Step(num: '1', text: 'Download the official Excel/CSV template.'),
+                _Step(
+                  num: '1',
+                  text: 'Download the official Excel/CSV template.',
+                ),
                 SizedBox(height: 12),
-                _Step(num: '2', text: 'Fill in all mandatory fields like Name, Age, and Experience.'),
+                _Step(
+                  num: '2',
+                  text:
+                      'Fill in all mandatory fields like Name, Age, and Experience.',
+                ),
                 SizedBox(height: 12),
-                _Step(num: '3', text: 'Upload the completed file using the zone above.'),
+                _Step(
+                  num: '3',
+                  text: 'Upload the completed file using the zone above.',
+                ),
                 SizedBox(height: 12),
                 _Step(num: '4', text: 'Review any errors if processing fails.'),
               ],
@@ -148,15 +179,25 @@ class _Step extends StatelessWidget {
           width: 20,
           height: 20,
           decoration: BoxDecoration(
-            color: const Color(0xFF6366F1).withOpacity(0.1),
+            color: const Color(0xFF6366F1).withValues(alpha: 0.1),
             shape: BoxShape.circle,
           ),
           child: Center(
-            child: Text(num, style: const TextStyle(color: Color(0xFF6366F1), fontWeight: FontWeight.bold, fontSize: 11)),
+            child: Text(
+              num,
+              style: const TextStyle(
+                color: Color(0xFF6366F1),
+                fontWeight: FontWeight.bold,
+                fontSize: 11,
+              ),
+            ),
           ),
         ),
         const SizedBox(width: 12),
-        Text(text, style: const TextStyle(color: Color(0xFF475569), fontSize: 13)),
+        Text(
+          text,
+          style: const TextStyle(color: Color(0xFF475569), fontSize: 13),
+        ),
       ],
     );
   }

@@ -17,6 +17,7 @@ class AdminStatTile extends StatelessWidget {
   final IconData icon;
   final Color color;
   final String? subtitle;
+
   /// Positive = up, negative = down, null = no trend
   final int? trend;
 
@@ -53,7 +54,10 @@ class AdminStatTile extends StatelessWidget {
               ),
               if (trend != null)
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
+                  ),
                   decoration: BoxDecoration(
                     color: trend! >= 0
                         ? const Color(0xFF10B981).withOpacity(0.1)
@@ -107,9 +111,9 @@ class AdminStatTile extends StatelessWidget {
             const SizedBox(height: 4),
             Text(
               subtitle!,
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: const Color(0xFF94A3B8),
-              ),
+              style: Theme.of(
+                context,
+              ).textTheme.bodySmall?.copyWith(color: const Color(0xFF94A3B8)),
             ),
           ],
         ],

@@ -36,7 +36,9 @@ class _MaidFormPageState extends State<MaidFormPage> {
     super.initState();
     _isEdit = widget.maidId != null;
     if (_isEdit) {
-      final existingMaid = AdminPortalStore.instance.getMaidById(widget.maidId!);
+      final existingMaid = AdminPortalStore.instance.getMaidById(
+        widget.maidId!,
+      );
       if (existingMaid != null) {
         _maid = existingMaid;
         _nameController.text = _maid.name;
@@ -55,7 +57,7 @@ class _MaidFormPageState extends State<MaidFormPage> {
 
   Future<void> _save() async {
     if (!_formKey.currentState!.validate()) return;
-    
+
     setState(() => _isLoading = true);
 
     final updatedMaid = AdminMaidProfile(
@@ -70,20 +72,26 @@ class _MaidFormPageState extends State<MaidFormPage> {
       bio: _bioController.text,
       monthlyRate: int.parse(_rateController.text),
       createdAt: _isEdit ? _maid.createdAt : DateTime.now(),
-      documents: _uploadedDocs.map((name) => MaidDocument(
-        name: name,
-        type: AdminMaidDocType.other,
-        uploadedAt: DateTime.now(),
-      )).toList(),
+      documents: _uploadedDocs
+          .map(
+            (name) => MaidDocument(
+              name: name,
+              type: AdminMaidDocType.other,
+              uploadedAt: DateTime.now(),
+            ),
+          )
+          .toList(),
     );
 
     try {
       if (_isEdit) {
         await AdminPortalStore.instance.updateMaid(updatedMaid);
-        if (mounted) AdminDialog.showSnack(context, 'Profile updated successfully.');
+        if (mounted)
+          AdminDialog.showSnack(context, 'Profile updated successfully.');
       } else {
         await AdminPortalStore.instance.addMaid(updatedMaid);
-        if (mounted) AdminDialog.showSnack(context, 'Maid profile created successfully.');
+        if (mounted)
+          AdminDialog.showSnack(context, 'Maid profile created successfully.');
       }
       if (mounted) context.go(AppRoutes.maidProfileManagement);
     } catch (e) {
@@ -117,22 +125,27 @@ class _MaidFormPageState extends State<MaidFormPage> {
                   child: Text(
                     _isEdit ? 'Edit Maid Profile' : 'Add New Maid Profile',
                     style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                          fontWeight: FontWeight.w700,
-                        ),
+                      fontWeight: FontWeight.w700,
+                    ),
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
                 if (!isMobile) ...[
                   const SizedBox(width: 12),
                   OutlinedButton(
-                    onPressed: () => context.go(AppRoutes.maidProfileManagement),
+                    onPressed: () =>
+                        context.go(AppRoutes.maidProfileManagement),
                     child: const Text('Cancel'),
                   ),
                   const SizedBox(width: 12),
                   if (_isLoading)
                     const Padding(
                       padding: EdgeInsets.symmetric(horizontal: 24),
-                      child: SizedBox(height: 20, width: 20, child: CircularProgressIndicator(strokeWidth: 2)),
+                      child: SizedBox(
+                        height: 20,
+                        width: 20,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      ),
                     )
                   else
                     FilledButton(
@@ -148,7 +161,8 @@ class _MaidFormPageState extends State<MaidFormPage> {
                 children: [
                   Expanded(
                     child: OutlinedButton(
-                      onPressed: () => context.go(AppRoutes.maidProfileManagement),
+                      onPressed: () =>
+                          context.go(AppRoutes.maidProfileManagement),
                       child: const Text('Cancel'),
                     ),
                   ),
@@ -156,9 +170,16 @@ class _MaidFormPageState extends State<MaidFormPage> {
                   Expanded(
                     child: FilledButton(
                       onPressed: _isLoading ? null : _save,
-                      child: _isLoading 
-                        ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
-                        : const Text('Save Profile'),
+                      child: _isLoading
+                          ? const SizedBox(
+                              height: 20,
+                              width: 20,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                color: Colors.white,
+                              ),
+                            )
+                          : const Text('Save Profile'),
                     ),
                   ),
                 ],
@@ -196,12 +217,16 @@ class _MaidFormPageState extends State<MaidFormPage> {
       children: [
         AdminFormSection(
           title: 'Basic Information',
-          description: 'Enter the personal and contact details of the candidate.',
+          description:
+              'Enter the personal and contact details of the candidate.',
           child: Column(
             children: [
               TextFormField(
                 controller: _nameController,
-                decoration: const InputDecoration(labelText: 'Full Name', hintText: 'Enter full name'),
+                decoration: const InputDecoration(
+                  labelText: 'Full Name',
+                  hintText: 'Enter full name',
+                ),
                 validator: (v) => v!.isEmpty ? 'Name is required' : null,
               ),
               const SizedBox(height: 20),
@@ -211,7 +236,10 @@ class _MaidFormPageState extends State<MaidFormPage> {
                     child: TextFormField(
                       controller: _ageController,
                       keyboardType: TextInputType.number,
-                      decoration: const InputDecoration(labelText: 'Age', hintText: 'Years'),
+                      decoration: const InputDecoration(
+                        labelText: 'Age',
+                        hintText: 'Years',
+                      ),
                       validator: (v) => v!.isEmpty ? 'Age required' : null,
                     ),
                   ),
@@ -219,8 +247,12 @@ class _MaidFormPageState extends State<MaidFormPage> {
                   Expanded(
                     child: TextFormField(
                       controller: _nationalityController,
-                      decoration: const InputDecoration(labelText: 'Nationality', hintText: 'e.g. Sri Lankan'),
-                      validator: (v) => v!.isEmpty ? 'Nationality required' : null,
+                      decoration: const InputDecoration(
+                        labelText: 'Nationality',
+                        hintText: 'e.g. Sri Lankan',
+                      ),
+                      validator: (v) =>
+                          v!.isEmpty ? 'Nationality required' : null,
                     ),
                   ),
                 ],
@@ -232,8 +264,12 @@ class _MaidFormPageState extends State<MaidFormPage> {
                     child: TextFormField(
                       controller: _experienceController,
                       keyboardType: TextInputType.number,
-                      decoration: const InputDecoration(labelText: 'Experience', hintText: 'Years'),
-                      validator: (v) => v!.isEmpty ? 'Experience required' : null,
+                      decoration: const InputDecoration(
+                        labelText: 'Experience',
+                        hintText: 'Years',
+                      ),
+                      validator: (v) =>
+                          v!.isEmpty ? 'Experience required' : null,
                     ),
                   ),
                   const SizedBox(width: 20),
@@ -241,7 +277,10 @@ class _MaidFormPageState extends State<MaidFormPage> {
                     child: TextFormField(
                       controller: _rateController,
                       keyboardType: TextInputType.number,
-                      decoration: const InputDecoration(labelText: 'Monthly Rate', hintText: 'USD / Month'),
+                      decoration: const InputDecoration(
+                        labelText: 'Monthly Rate',
+                        hintText: 'USD / Month',
+                      ),
                       validator: (v) => v!.isEmpty ? 'Rate is required' : null,
                     ),
                   ),
@@ -249,13 +288,20 @@ class _MaidFormPageState extends State<MaidFormPage> {
               ),
               const SizedBox(height: 20),
               DropdownButtonFormField<AdminMaidAvailability>(
-                value: _availability,
-                decoration: const InputDecoration(labelText: 'Availability Status'),
+                initialValue: _availability,
+                decoration: const InputDecoration(
+                  labelText: 'Availability Status',
+                ),
                 items: AdminMaidAvailability.values
-                    .map((v) => DropdownMenuItem(
-                          value: v,
-                          child: Text(v.name.substring(0, 1).toUpperCase() + v.name.substring(1)),
-                        ))
+                    .map(
+                      (v) => DropdownMenuItem(
+                        value: v,
+                        child: Text(
+                          v.name.substring(0, 1).toUpperCase() +
+                              v.name.substring(1),
+                        ),
+                      ),
+                    )
                     .toList(),
                 onChanged: (v) => setState(() => _availability = v!),
               ),
@@ -282,20 +328,38 @@ class _MaidFormPageState extends State<MaidFormPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text('Skills (Comma separated)', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 13)),
+              const Text(
+                'Skills (Comma separated)',
+                style: TextStyle(fontWeight: FontWeight.w600, fontSize: 13),
+              ),
               const SizedBox(height: 8),
               TextFormField(
                 initialValue: _skills.join(', '),
-                onChanged: (v) => _skills = v.split(',').map((s) => s.trim()).where((s) => s.isNotEmpty).toList(),
-                decoration: const InputDecoration(hintText: 'e.g. Cooking, Childcare, Cleaning'),
+                onChanged: (v) => _skills = v
+                    .split(',')
+                    .map((s) => s.trim())
+                    .where((s) => s.isNotEmpty)
+                    .toList(),
+                decoration: const InputDecoration(
+                  hintText: 'e.g. Cooking, Childcare, Cleaning',
+                ),
               ),
               const SizedBox(height: 20),
-              const Text('Languages (Comma separated)', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 13)),
+              const Text(
+                'Languages (Comma separated)',
+                style: TextStyle(fontWeight: FontWeight.w600, fontSize: 13),
+              ),
               const SizedBox(height: 8),
               TextFormField(
                 initialValue: _languages.join(', '),
-                onChanged: (v) => _languages = v.split(',').map((l) => l.trim()).where((l) => l.isNotEmpty).toList(),
-                decoration: const InputDecoration(hintText: 'e.g. English, Sinhala, Tamil'),
+                onChanged: (v) => _languages = v
+                    .split(',')
+                    .map((l) => l.trim())
+                    .where((l) => l.isNotEmpty)
+                    .toList(),
+                decoration: const InputDecoration(
+                  hintText: 'e.g. English, Sinhala, Tamil',
+                ),
               ),
             ],
           ),

@@ -4,10 +4,7 @@ import 'package:go_router/go_router.dart';
 import '../../../../app/router/app_routes.dart';
 
 class PublicNavLink {
-  const PublicNavLink({
-    required this.label,
-    required this.route,
-  });
+  const PublicNavLink({required this.label, required this.route});
 
   final String label;
   final String route;
@@ -38,17 +35,11 @@ class PublicSiteScaffold extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF7F9FC),
-      drawer: PublicHeaderDrawer(
-        currentRoute: currentRoute,
-        links: navLinks,
-      ),
+      drawer: PublicHeaderDrawer(currentRoute: currentRoute, links: navLinks),
       body: CustomScrollView(
         slivers: <Widget>[
           SliverToBoxAdapter(
-            child: PublicHeader(
-              currentRoute: currentRoute,
-              links: navLinks,
-            ),
+            child: PublicHeader(currentRoute: currentRoute, links: navLinks),
           ),
           SliverToBoxAdapter(
             child: Padding(
@@ -104,7 +95,10 @@ class PublicHeader extends StatelessWidget {
 
               return Row(
                 children: <Widget>[
-                  const Icon(Icons.home_work_outlined, color: Color(0xFF1F4F99)),
+                  const Icon(
+                    Icons.home_work_outlined,
+                    color: Color(0xFF1F4F99),
+                  ),
                   const SizedBox(width: 10),
                   const Text(
                     'MaidConnect',
@@ -115,11 +109,13 @@ class PublicHeader extends StatelessWidget {
                     Wrap(
                       spacing: 6,
                       children: links
-                          .map((PublicNavLink link) => _HeaderLinkButton(
-                                label: link.label,
-                                route: link.route,
-                                selected: currentRoute == link.route,
-                              ))
+                          .map(
+                            (PublicNavLink link) => _HeaderLinkButton(
+                              label: link.label,
+                              route: link.route,
+                              selected: currentRoute == link.route,
+                            ),
+                          )
                           .toList(),
                     ),
                   if (compact)
@@ -271,8 +267,8 @@ class PublicHeroSection extends StatelessWidget {
                               vertical: 14,
                             ),
                           ),
-                          onPressed: onFindMaid ??
-                              () => context.go(AppRoutes.contact),
+                          onPressed:
+                              onFindMaid ?? () => context.go(AppRoutes.contact),
                           child: const Text('Find a Maid'),
                         ),
                         OutlinedButton(
@@ -284,7 +280,8 @@ class PublicHeroSection extends StatelessWidget {
                               vertical: 14,
                             ),
                           ),
-                          onPressed: onContactUs ??
+                          onPressed:
+                              onContactUs ??
                               () => context.go(AppRoutes.contact),
                           child: const Text('Contact Us'),
                         ),
@@ -403,10 +400,9 @@ class SectionTitle extends StatelessWidget {
           ],
           Text(
             title,
-            style: Theme.of(context)
-                .textTheme
-                .headlineSmall
-                ?.copyWith(fontWeight: FontWeight.w700),
+            style: Theme.of(
+              context,
+            ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w700),
           ),
           const SizedBox(height: 6),
           Text(subtitle, style: const TextStyle(height: 1.45)),
@@ -440,7 +436,9 @@ class PricingPlanCard extends StatelessWidget {
         color: highlighted ? const Color(0xFFF0F6FF) : Colors.white,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: highlighted ? const Color(0xFF2F80ED) : const Color(0xFFE5EAF3),
+          color: highlighted
+              ? const Color(0xFF2F80ED)
+              : const Color(0xFFE5EAF3),
           width: highlighted ? 1.4 : 1,
         ),
         boxShadow: const <BoxShadow>[
@@ -458,12 +456,18 @@ class PricingPlanCard extends StatelessWidget {
             children: <Widget>[
               Text(
                 name,
-                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w700,
+                ),
               ),
               const Spacer(),
               if (tag != null)
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 4,
+                  ),
                   decoration: BoxDecoration(
                     color: const Color(0xFF1F4F99),
                     borderRadius: BorderRadius.circular(999),
@@ -490,7 +494,10 @@ class PricingPlanCard extends StatelessWidget {
                 ),
                 TextSpan(
                   text: price,
-                  style: const TextStyle(fontSize: 34, fontWeight: FontWeight.w800),
+                  style: const TextStyle(
+                    fontSize: 34,
+                    fontWeight: FontWeight.w800,
+                  ),
                 ),
               ],
             ),
@@ -530,20 +537,14 @@ class PricingPlanCard extends StatelessWidget {
 }
 
 class FaqItem {
-  const FaqItem({
-    required this.question,
-    required this.answer,
-  });
+  const FaqItem({required this.question, required this.answer});
 
   final String question;
   final String answer;
 }
 
 class FaqAccordionSection extends StatelessWidget {
-  const FaqAccordionSection({
-    super.key,
-    required this.items,
-  });
+  const FaqAccordionSection({super.key, required this.items});
 
   final List<FaqItem> items;
 
@@ -633,10 +634,7 @@ class ContactSection extends StatelessWidget {
 }
 
 class _ContactInfoColumn extends StatelessWidget {
-  const _ContactInfoColumn({
-    required this.title,
-    required this.rows,
-  });
+  const _ContactInfoColumn({required this.title, required this.rows});
 
   final String title;
   final List<String> rows;

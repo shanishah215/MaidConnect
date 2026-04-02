@@ -38,7 +38,11 @@ class AdminDialog {
   }
 
   /// Show a simple info/success snackbar
-  static void showSnack(BuildContext context, String message, {bool isError = false}) {
+  static void showSnack(
+    BuildContext context,
+    String message, {
+    bool isError = false,
+  }) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Row(
@@ -52,7 +56,9 @@ class AdminDialog {
             Text(message),
           ],
         ),
-        backgroundColor: isError ? const Color(0xFFEF4444) : const Color(0xFF10B981),
+        backgroundColor: isError
+            ? const Color(0xFFEF4444)
+            : const Color(0xFF10B981),
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         margin: const EdgeInsets.all(16),
@@ -102,9 +108,9 @@ class _ConfirmDialog extends StatelessWidget {
               const SizedBox(height: 16),
               Text(
                 title,
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.w700,
-                ),
+                style: Theme.of(
+                  context,
+                ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
               ),
               const SizedBox(height: 8),
               Text(
@@ -179,7 +185,10 @@ class _AssignMaidDialogState extends State<_AssignMaidDialog> {
                       color: const Color(0xFF6366F1).withOpacity(0.1),
                       borderRadius: BorderRadius.circular(10),
                     ),
-                    child: const Icon(Icons.assignment_ind_outlined, color: Color(0xFF6366F1)),
+                    child: const Icon(
+                      Icons.assignment_ind_outlined,
+                      color: Color(0xFF6366F1),
+                    ),
                   ),
                   const SizedBox(width: 12),
                   Text(
@@ -193,17 +202,29 @@ class _AssignMaidDialogState extends State<_AssignMaidDialog> {
               const SizedBox(height: 8),
               Text(
                 'Select a maid to assign to this inquiry.',
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(color: const Color(0xFF64748B)),
+                style: Theme.of(
+                  context,
+                ).textTheme.bodySmall?.copyWith(color: const Color(0xFF64748B)),
               ),
               const SizedBox(height: 20),
-              ...widget.maidNames.map((name) => RadioListTile<String>(
-                title: Text(name, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
-                value: name,
-                groupValue: _selected,
-                onChanged: (v) => setState(() => _selected = v),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                contentPadding: const EdgeInsets.symmetric(horizontal: 8),
-              )),
+              ...widget.maidNames.map(
+                (name) => RadioListTile<String>(
+                  title: Text(
+                    name,
+                    style: const TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  value: name,
+                  groupValue: _selected,
+                  onChanged: (v) => setState(() => _selected = v),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 8),
+                ),
+              ),
               const SizedBox(height: 20),
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
@@ -211,15 +232,21 @@ class _AssignMaidDialogState extends State<_AssignMaidDialog> {
                   OutlinedButton(
                     onPressed: () => Navigator.pop(context),
                     style: OutlinedButton.styleFrom(
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
                     ),
                     child: const Text('Cancel'),
                   ),
                   const SizedBox(width: 12),
                   FilledButton(
-                    onPressed: _selected == null ? null : () => Navigator.pop(context, _selected),
+                    onPressed: _selected == null
+                        ? null
+                        : () => Navigator.pop(context, _selected),
                     style: FilledButton.styleFrom(
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
                     ),
                     child: const Text('Assign'),
                   ),

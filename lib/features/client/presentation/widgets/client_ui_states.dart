@@ -69,9 +69,9 @@ class ClientEmptyState extends StatelessWidget {
             Text(
               title,
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.w800,
-                    color: const Color(0xFF0F172A),
-                  ),
+                fontWeight: FontWeight.w800,
+                color: const Color(0xFF0F172A),
+              ),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 8),

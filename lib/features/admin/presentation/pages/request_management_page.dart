@@ -5,13 +5,16 @@ import '../widgets/admin_search_bar.dart';
 import '../widgets/admin_status_chip.dart';
 import '../widgets/admin_dialog.dart';
 
+/// Page for administrators to manage and process client service requests
 class RequestManagementPage extends StatefulWidget {
+  /// Default constructor for RequestManagementPage
   const RequestManagementPage({super.key});
 
   @override
   State<RequestManagementPage> createState() => _RequestManagementPageState();
 }
 
+/// State class for RequestManagementPage handling tab navigation and request filtering
 class _RequestManagementPageState extends State<RequestManagementPage>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
@@ -20,6 +23,7 @@ class _RequestManagementPageState extends State<RequestManagementPage>
   bool _isLoading = true;
 
   @override
+  /// Initializes tab controller and store listeners
   void initState() {
     super.initState();
     _tabController = TabController(length: 5, vsync: this);
@@ -29,16 +33,20 @@ class _RequestManagementPageState extends State<RequestManagementPage>
   }
 
   @override
+  /// Disposes controllers and removes listeners to prevent memory leaks
   void dispose() {
     AdminPortalStore.instance.removeListener(_onStoreChanged);
     _tabController.dispose();
+    _searchController.dispose();
     super.dispose();
   }
 
+  /// Refreshes the display when the underlying data store changes
   void _onStoreChanged() {
     if (mounted) _updateDisplay();
   }
 
+  /// Ensures administrative data is loaded from the repository
   Future<void> _load() async {
     await AdminPortalStore.instance.ensureLoaded();
     if (mounted) {
@@ -47,11 +55,13 @@ class _RequestManagementPageState extends State<RequestManagementPage>
     }
   }
 
+  /// Updates the request list when switching between status tabs
   void _handleTabChange() {
     if (_tabController.indexIsChanging) return;
     _updateDisplay();
   }
 
+  /// Filters and updates the current list of inquiries based on tab and search query
   void _updateDisplay() {
     final status = _getStatusFromTabIndex(_tabController.index);
     setState(() {
@@ -71,6 +81,7 @@ class _RequestManagementPageState extends State<RequestManagementPage>
     });
   }
 
+  /// Maps tab index to the corresponding InquiryStatus
   InquiryStatus? _getStatusFromTabIndex(int index) {
     switch (index) {
       case 1:
@@ -88,6 +99,7 @@ class _RequestManagementPageState extends State<RequestManagementPage>
     }
   }
 
+  /// Handles the approval and initial hiring process for an inquiry
   Future<void> _approve(ClientInquiry inq) async {
     final ok = await AdminDialog.confirm(
       context,
@@ -101,14 +113,16 @@ class _RequestManagementPageState extends State<RequestManagementPage>
     if (ok) {
       await AdminPortalStore.instance.assignInquiry(inq.id, inq.maidName);
       _updateDisplay();
-      if (mounted)
+      if (mounted) {
         AdminDialog.showSnack(
           context,
           'Request approved and ${inq.maidName} assigned.',
         );
+      }
     }
   }
 
+  /// Rejects a client inquiry with confirmation
   Future<void> _reject(ClientInquiry inq) async {
     final ok = await AdminDialog.confirm(
       context,
@@ -123,6 +137,7 @@ class _RequestManagementPageState extends State<RequestManagementPage>
     }
   }
 
+  /// Opens displacement dialog to assign a maid to a specific inquiry
   Future<void> _assign(ClientInquiry inq) async {
     final maids = AdminPortalStore.instance.maids
         .where((m) => m.availabilityStatus == AdminMaidAvailability.available)
@@ -145,11 +160,13 @@ class _RequestManagementPageState extends State<RequestManagementPage>
     if (selectedMaid != null) {
       await AdminPortalStore.instance.assignInquiry(inq.id, selectedMaid);
       _updateDisplay();
-      if (mounted)
+      if (mounted) {
         AdminDialog.showSnack(context, 'Assigned $selectedMaid to inquiry.');
+      }
     }
   }
 
+  /// Marks a service request as completed after confirming with the admin
   Future<void> _complete(ClientInquiry inq) async {
     final ok = await AdminDialog.confirm(
       context,
@@ -162,8 +179,9 @@ class _RequestManagementPageState extends State<RequestManagementPage>
     if (ok) {
       await AdminPortalStore.instance.completeInquiry(inq.id);
       _updateDisplay();
-      if (mounted)
+      if (mounted) {
         AdminDialog.showSnack(context, 'Request marked as completed.');
+      }
     }
   }
 
@@ -369,6 +387,7 @@ class _RequestManagementPageState extends State<RequestManagementPage>
     );
   }
 
+  /// Returns the appropriate color theme for a given InquiryStatus
   Color _getStatusColor(InquiryStatus status) {
     switch (status) {
       case InquiryStatus.pending:

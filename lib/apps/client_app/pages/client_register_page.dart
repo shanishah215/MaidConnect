@@ -32,15 +32,16 @@ class _ClientRegisterPageState extends State<ClientRegisterPage> {
 
   Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) return;
-    
+
     setState(() => _isLoading = true);
 
     try {
       // 1. Create the user in Auth
-      final userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
-        email: _emailController.text.trim(),
-        password: _passwordController.text,
-      );
+      final userCredential = await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(
+            email: _emailController.text.trim(),
+            password: _passwordController.text,
+          );
 
       // 2. CREATE THE DATABASE RECORD
       final uid = userCredential.user?.uid;
@@ -52,7 +53,7 @@ class _ClientRegisterPageState extends State<ClientRegisterPage> {
           'createdAt': FieldValue.serverTimestamp(),
         });
       }
-      
+
       if (mounted) context.go(AppRoutes.clientDashboard);
     } on FirebaseAuthException catch (e) {
       if (mounted) {
@@ -101,9 +102,9 @@ class _ClientRegisterPageState extends State<ClientRegisterPage> {
                 const SizedBox(height: 4),
                 Text(
                   'Join MaidConnect as a client',
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: Colors.grey[600],
-                  ),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodyMedium?.copyWith(color: Colors.grey[600]),
                 ),
                 const SizedBox(height: 32),
                 Card(
@@ -128,8 +129,8 @@ class _ClientRegisterPageState extends State<ClientRegisterPage> {
                             ),
                             validator: (value) =>
                                 (value == null || value.trim().isEmpty)
-                                    ? 'Name is required'
-                                    : null,
+                                ? 'Name is required'
+                                : null,
                           ),
                           const SizedBox(height: 16),
                           TextFormField(

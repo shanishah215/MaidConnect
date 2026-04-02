@@ -46,7 +46,8 @@ class _ClientDashboardPageState extends State<ClientDashboardPage> {
     }
 
     final user = FirebaseAuth.instance.currentUser;
-    final String userName = user?.displayName ?? user?.email?.split('@').first ?? 'Guest';
+    final String userName =
+        user?.displayName ?? user?.email?.split('@').first ?? 'Guest';
     final store = ClientPortalStore.instance;
 
     return ListView(
@@ -138,28 +139,34 @@ class _ClientDashboardPageState extends State<ClientDashboardPage> {
                         const SizedBox(height: 16),
                         Text(
                           'Find the perfect home helper',
-                          style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                            fontWeight: FontWeight.w700,
-                          ),
+                          style: Theme.of(context).textTheme.titleMedium
+                              ?.copyWith(fontWeight: FontWeight.w700),
                         ),
                         const SizedBox(height: 8),
                         Text(
                           'Browse verified profiles, filter by skills and availability, and send callback or hire requests instantly.',
-                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            color: const Color(0xFF64748B),
-                            height: 1.5,
-                          ),
+                          style: Theme.of(context).textTheme.bodyMedium
+                              ?.copyWith(
+                                color: const Color(0xFF64748B),
+                                height: 1.5,
+                              ),
                         ),
                         const SizedBox(height: 24),
                         FilledButton(
                           style: FilledButton.styleFrom(
-                            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 24,
+                              vertical: 16,
+                            ),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(12),
                             ),
                           ),
                           onPressed: () => context.go(AppRoutes.maidListing),
-                          child: const Text('Explore profiles', style: TextStyle(fontWeight: FontWeight.w600)),
+                          child: const Text(
+                            'Explore profiles',
+                            style: TextStyle(fontWeight: FontWeight.w600),
+                          ),
                         ),
                       ],
                     ),
@@ -305,7 +312,10 @@ class _RequestSnippet extends StatelessWidget {
                   color: const Color(0xFFF1F5F9),
                   borderRadius: BorderRadius.circular(12),
                 ),
-                child: const Icon(Icons.assignment_outlined, color: Color(0xFF64748B)),
+                child: const Icon(
+                  Icons.assignment_outlined,
+                  color: Color(0xFF64748B),
+                ),
               ),
               const SizedBox(width: 16),
               Expanded(
@@ -314,12 +324,18 @@ class _RequestSnippet extends StatelessWidget {
                   children: [
                     Text(
                       maidName,
-                      style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 16),
+                      style: const TextStyle(
+                        fontWeight: FontWeight.w700,
+                        fontSize: 16,
+                      ),
                     ),
                     const SizedBox(height: 4),
                     Text(
                       'Request ID: $requestId',
-                      style: const TextStyle(color: Color(0xFF64748B), fontSize: 13),
+                      style: const TextStyle(
+                        color: Color(0xFF64748B),
+                        fontSize: 13,
+                      ),
                     ),
                   ],
                 ),
@@ -363,14 +379,21 @@ class _HeroHeader extends StatelessWidget {
           Row(
             children: [
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 6,
+                ),
                 decoration: BoxDecoration(
                   color: Colors.white.withOpacity(0.2),
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: const Text(
                   'Dashboard',
-                  style: TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w600),
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
               ),
             ],
@@ -387,7 +410,10 @@ class _HeroHeader extends StatelessWidget {
           const SizedBox(height: 8),
           Text(
             'Find and book trusted domestic professionals with ease.',
-            style: TextStyle(color: Colors.white.withOpacity(0.8), fontSize: 16),
+            style: TextStyle(
+              color: Colors.white.withOpacity(0.8),
+              fontSize: 16,
+            ),
           ),
           const SizedBox(height: 32),
           Material(
@@ -399,7 +425,10 @@ class _HeroHeader extends StatelessWidget {
               borderRadius: BorderRadius.circular(16),
               onTap: onSearchTap,
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 16,
+                ),
                 child: Row(
                   children: [
                     const Icon(Icons.search, color: Color(0xFF94A3B8)),
@@ -415,12 +444,22 @@ class _HeroHeader extends StatelessWidget {
                       ),
                     ),
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 4,
+                      ),
                       decoration: BoxDecoration(
                         color: const Color(0xFFF1F5F9),
                         borderRadius: BorderRadius.circular(6),
                       ),
-                      child: const Text('⌘ K', style: TextStyle(color: Color(0xFF64748B), fontSize: 12, fontWeight: FontWeight.w700)),
+                      child: const Text(
+                        '⌘ K',
+                        style: TextStyle(
+                          color: Color(0xFF64748B),
+                          fontSize: 12,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
                     ),
                   ],
                 ),
@@ -443,8 +482,14 @@ class _CategoryRow extends StatelessWidget {
       children: const [
         _CategoryTile(icon: Icons.child_care_outlined, label: 'Child Care'),
         _CategoryTile(icon: Icons.elderly_outlined, label: 'Elderly Support'),
-        _CategoryTile(icon: Icons.cleaning_services_outlined, label: 'House Cleaning'),
-        _CategoryTile(icon: Icons.restaurant_menu_outlined, label: 'Cooking & Prep'),
+        _CategoryTile(
+          icon: Icons.cleaning_services_outlined,
+          label: 'House Cleaning',
+        ),
+        _CategoryTile(
+          icon: Icons.restaurant_menu_outlined,
+          label: 'Cooking & Prep',
+        ),
         _CategoryTile(icon: Icons.pets_outlined, label: 'Pet Care'),
       ],
     );

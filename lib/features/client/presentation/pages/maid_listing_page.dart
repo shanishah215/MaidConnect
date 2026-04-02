@@ -9,19 +9,23 @@ import '../widgets/maid_filter_panel.dart';
 import '../widgets/maid_profile_card.dart';
 import 'maid_profile_detail_page.dart';
 
+/// Page for clients to browse, search, and filter available maid profiles
 class MaidListingPage extends StatefulWidget {
+  /// Default constructor for MaidListingPage
   const MaidListingPage({super.key});
 
   @override
   State<MaidListingPage> createState() => _MaidListingPageState();
 }
 
+/// State class for MaidListingPage managing search queries and filter applications
 class _MaidListingPageState extends State<MaidListingPage> {
   bool _isLoading = true;
   String _query = '';
   MaidFilter _filter = const MaidFilter();
 
   @override
+  /// Adds listener to the central store and triggers initial data load
   void initState() {
     super.initState();
     ClientPortalStore.instance.addListener(_onStoreChanged);
@@ -29,21 +33,25 @@ class _MaidListingPageState extends State<MaidListingPage> {
   }
 
   @override
+  /// Removes store listener to prevent memory leaks
   void dispose() {
     ClientPortalStore.instance.removeListener(_onStoreChanged);
     super.dispose();
   }
 
+  /// Triggers a rebuild when the store notifications are received
   void _onStoreChanged() {
     if (mounted) setState(() {});
   }
 
+  /// Loads data from the store and updates the loading state
   Future<void> _load() async {
     await ClientPortalStore.instance.ensureLoaded();
     if (!mounted) return;
     setState(() => _isLoading = false);
   }
 
+  /// Filters the input list of maids based on the current search query and MaidFilter settings
   List<MaidProfile> _applyFilters(List<MaidProfile> input) {
     return input.where((maid) {
       final bool queryMatches =
@@ -75,6 +83,7 @@ class _MaidListingPageState extends State<MaidListingPage> {
   }
 
   @override
+  /// Builds the listing UI with responsive layouts for mobile and desktop
   Widget build(BuildContext context) {
     if (_isLoading) {
       return const ClientLoadingState();
@@ -88,45 +97,46 @@ class _MaidListingPageState extends State<MaidListingPage> {
     final bool isMobile = MediaQuery.of(context).size.width < 960;
 
     return Padding(
-        padding: const EdgeInsets.all(16),
-        child: isMobile
-            ? _MobileListing(
-                query: _query,
-                onQueryChanged: (v) => setState(() => _query = v),
-                filtered: filtered,
-                filter: _filter,
-                allSkills: allSkills,
-                allLanguages: allLanguages,
-                onFilterChanged: (value) => setState(() => _filter = value),
-              )
-            : Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(
-                    width: 300,
-                    child: MaidFilterPanel(
-                      filter: _filter,
-                      allSkills: allSkills,
-                      allLanguages: allLanguages,
-                      onFilterChanged: (value) =>
-                          setState(() => _filter = value),
-                    ),
+      padding: const EdgeInsets.all(16),
+      child: isMobile
+          ? _MobileListing(
+              query: _query,
+              onQueryChanged: (v) => setState(() => _query = v),
+              filtered: filtered,
+              filter: _filter,
+              allSkills: allSkills,
+              allLanguages: allLanguages,
+              onFilterChanged: (value) => setState(() => _filter = value),
+            )
+          : Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(
+                  width: 300,
+                  child: MaidFilterPanel(
+                    filter: _filter,
+                    allSkills: allSkills,
+                    allLanguages: allLanguages,
+                    onFilterChanged: (value) => setState(() => _filter = value),
                   ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: _ListingResults(
-                      query: _query,
-                      onQueryChanged: (v) => setState(() => _query = v),
-                      filtered: filtered,
-                    ),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: _ListingResults(
+                    query: _query,
+                    onQueryChanged: (v) => setState(() => _query = v),
+                    filtered: filtered,
                   ),
-                ],
-      ),
+                ),
+              ],
+            ),
     );
   }
 }
 
+/// Mobile-optimized view of the maid listing with search and expansion-style filtering
 class _MobileListing extends StatelessWidget {
+  /// Default constructor for _MobileListing
   const _MobileListing({
     required this.query,
     required this.onQueryChanged,
@@ -170,7 +180,10 @@ class _MobileListing extends StatelessWidget {
               hintText: 'Search by name, tags, or skills...',
               hintStyle: TextStyle(color: Color(0xFF94A3B8)),
               border: InputBorder.none,
-              contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+              contentPadding: EdgeInsets.symmetric(
+                horizontal: 20,
+                vertical: 16,
+              ),
             ),
             onChanged: onQueryChanged,
           ),
@@ -199,7 +212,9 @@ class _MobileListing extends StatelessWidget {
   }
 }
 
+/// Desktop-style results panel for the maid listing
 class _ListingResults extends StatelessWidget {
+  /// Default constructor for _ListingResults
   const _ListingResults({
     required this.query,
     required this.onQueryChanged,
@@ -235,7 +250,10 @@ class _ListingResults extends StatelessWidget {
               hintText: 'Search by name, tags, or skills...',
               hintStyle: TextStyle(color: Color(0xFF94A3B8)),
               border: InputBorder.none,
-              contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+              contentPadding: EdgeInsets.symmetric(
+                horizontal: 20,
+                vertical: 16,
+              ),
             ),
             onChanged: onQueryChanged,
           ),
@@ -253,7 +271,9 @@ class _ListingResults extends StatelessWidget {
   }
 }
 
+/// Visual header for the maid listing section
 class _ListingHeader extends StatelessWidget {
+  /// Default constructor for _ListingHeader
   const _ListingHeader();
 
   @override
@@ -273,9 +293,13 @@ class _ListingHeader extends StatelessWidget {
             children: const [
               Icon(Icons.stars_rounded, color: Color(0xFFF59E0B)),
               SizedBox(width: 8),
-              Text(
+              const Text(
                 'Explore the Network',
-                style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: Color(0xFFF59E0B)),
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w700,
+                  color: Color(0xFFF59E0B),
+                ),
               ),
             ],
           ),
@@ -299,7 +323,9 @@ class _ListingHeader extends StatelessWidget {
   }
 }
 
+/// Interactive list of result cards representing filtered maid profiles
 class _ResultCards extends StatefulWidget {
+  /// Default constructor for _ResultCards
   const _ResultCards({
     required this.filtered,
     required this.shrinkWrap,
@@ -313,6 +339,7 @@ class _ResultCards extends StatefulWidget {
   State<_ResultCards> createState() => _ResultCardsState();
 }
 
+/// State for managing interactions (shortlisting, navigation) on individual profile cards
 class _ResultCardsState extends State<_ResultCards> {
   @override
   Widget build(BuildContext context) {

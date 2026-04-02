@@ -3,20 +3,10 @@ import 'package:go_router/go_router.dart';
 
 import '../widgets/public_site_components.dart';
 
-enum PublicSection {
-  home,
-  about,
-  services,
-  pricing,
-  contact,
-  faqs,
-}
+enum PublicSection { home, about, services, pricing, contact, faqs }
 
 class PublicSinglePage extends StatefulWidget {
-  const PublicSinglePage({
-    super.key,
-    this.initialSection = PublicSection.home,
-  });
+  const PublicSinglePage({super.key, this.initialSection = PublicSection.home});
 
   final PublicSection initialSection;
 
@@ -62,10 +52,7 @@ class _PublicSinglePageState extends State<PublicSinglePage> {
     }
   }
 
-  void _goToRouteOrScroll({
-    required String route,
-    required GlobalKey key,
-  }) {
+  void _goToRouteOrScroll({required String route, required GlobalKey key}) {
     final String? currentRoute = ModalRoute.of(context)?.settings.name;
     if (currentRoute == route) {
       _scrollTo(key);
@@ -98,38 +85,37 @@ class _PublicSinglePageState extends State<PublicSinglePage> {
   }
 
   List<_OnePageNavItem> get _navItems => <_OnePageNavItem>[
-        _OnePageNavItem(
-          label: 'Home',
-          isSelected: widget.initialSection == PublicSection.home,
-          onTap: () =>
-              _goToRouteOrScroll(route: '/', key: _homeKey),
-        ),
-        _OnePageNavItem(
-          label: 'About Us',
-          isSelected: widget.initialSection == PublicSection.about,
-          onTap: () => _goToRouteOrScroll(route: '/about', key: _aboutKey),
-        ),
-        _OnePageNavItem(
-          label: 'Services',
-          isSelected: widget.initialSection == PublicSection.services,
-          onTap: () => _goToRouteOrScroll(route: '/services', key: _servicesKey),
-        ),
-        _OnePageNavItem(
-          label: 'Pricing',
-          isSelected: widget.initialSection == PublicSection.pricing,
-          onTap: () => _goToRouteOrScroll(route: '/pricing', key: _pricingKey),
-        ),
-        _OnePageNavItem(
-          label: 'Contact Us',
-          isSelected: widget.initialSection == PublicSection.contact,
-          onTap: () => _goToRouteOrScroll(route: '/contact', key: _contactKey),
-        ),
-        _OnePageNavItem(
-          label: 'FAQs',
-          isSelected: widget.initialSection == PublicSection.faqs,
-          onTap: () => _goToRouteOrScroll(route: '/faqs', key: _faqsKey),
-        ),
-      ];
+    _OnePageNavItem(
+      label: 'Home',
+      isSelected: widget.initialSection == PublicSection.home,
+      onTap: () => _goToRouteOrScroll(route: '/', key: _homeKey),
+    ),
+    _OnePageNavItem(
+      label: 'About Us',
+      isSelected: widget.initialSection == PublicSection.about,
+      onTap: () => _goToRouteOrScroll(route: '/about', key: _aboutKey),
+    ),
+    _OnePageNavItem(
+      label: 'Services',
+      isSelected: widget.initialSection == PublicSection.services,
+      onTap: () => _goToRouteOrScroll(route: '/services', key: _servicesKey),
+    ),
+    _OnePageNavItem(
+      label: 'Pricing',
+      isSelected: widget.initialSection == PublicSection.pricing,
+      onTap: () => _goToRouteOrScroll(route: '/pricing', key: _pricingKey),
+    ),
+    _OnePageNavItem(
+      label: 'Contact Us',
+      isSelected: widget.initialSection == PublicSection.contact,
+      onTap: () => _goToRouteOrScroll(route: '/contact', key: _contactKey),
+    ),
+    _OnePageNavItem(
+      label: 'FAQs',
+      isSelected: widget.initialSection == PublicSection.faqs,
+      onTap: () => _goToRouteOrScroll(route: '/faqs', key: _faqsKey),
+    ),
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -163,7 +149,7 @@ class _PublicSinglePageState extends State<PublicSinglePage> {
                           headline: 'Trusted Maids for Every Home',
                           subheading:
                               'MaidConnect helps families hire verified and skilled maids with confidence. Discover candidates that match your schedule, needs, and budget.',
-                          onFindMaid: () => _scrollTo(_contactKey),
+                          onFindMaid: () => context.go('/client/register'),
                           onContactUs: () => _scrollTo(_contactKey),
                         ),
                       ),
@@ -283,11 +269,7 @@ class _SectionContainer extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          SectionTitle(
-            title: title,
-            subtitle: subtitle,
-            badge: badge,
-          ),
+          SectionTitle(title: title, subtitle: subtitle, badge: badge),
           const SizedBox(height: 8),
           child,
         ],
@@ -430,7 +412,10 @@ class _OnePageHeader extends StatelessWidget {
               final bool compact = constraints.maxWidth < 850;
               return Row(
                 children: <Widget>[
-                  const Icon(Icons.home_work_outlined, color: Color(0xFF1F4F99)),
+                  const Icon(
+                    Icons.home_work_outlined,
+                    color: Color(0xFF1F4F99),
+                  ),
                   const SizedBox(width: 10),
                   const Text(
                     'MaidConnect',
