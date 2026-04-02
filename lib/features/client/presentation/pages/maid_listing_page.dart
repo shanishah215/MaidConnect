@@ -178,7 +178,11 @@ class _MobileListing extends StatelessWidget {
           ],
         ),
         const SizedBox(height: 8),
-        _ResultCards(filtered: filtered),
+        _ResultCards(
+          filtered: filtered,
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+        ),
       ],
     );
   }
@@ -226,7 +230,13 @@ class _ListingResults extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 12),
-        Expanded(child: _ResultCards(filtered: filtered)),
+        Expanded(
+          child: _ResultCards(
+            filtered: filtered,
+            shrinkWrap: false,
+            physics: const AlwaysScrollableScrollPhysics(),
+          ),
+        ),
       ],
     );
   }
@@ -279,8 +289,14 @@ class _ListingHeader extends StatelessWidget {
 }
 
 class _ResultCards extends StatefulWidget {
-  const _ResultCards({required this.filtered});
+  const _ResultCards({
+    required this.filtered,
+    required this.shrinkWrap,
+    required this.physics,
+  });
   final List<MaidProfile> filtered;
+  final bool shrinkWrap;
+  final ScrollPhysics physics;
 
   @override
   State<_ResultCards> createState() => _ResultCardsState();
@@ -304,8 +320,8 @@ class _ResultCardsState extends State<_ResultCards> {
       );
     }
     return ListView.separated(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
+      shrinkWrap: widget.shrinkWrap,
+      physics: widget.physics,
       itemCount: widget.filtered.length,
       separatorBuilder: (_, itemIndex) => const SizedBox(height: 10),
       itemBuilder: (context, index) {
