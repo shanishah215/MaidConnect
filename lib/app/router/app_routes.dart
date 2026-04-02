@@ -24,7 +24,11 @@ class AppRoutes {
   static const String adminLogin = '/admin/login';
   static const String adminDashboard = '/admin/dashboard';
   static const String maidProfileManagement = '/admin/maids';
+  static const String adminMaidAdd = '/admin/maids/add';
+  static const String adminMaidEdit = '/admin/maids/edit'; // Will use path params
+  static const String adminClients = '/admin/clients';
   static const String requestsManagement = '/admin/requests';
+  static const String bulkUpload = '/admin/bulk-upload';
   static const String analyticsDashboard = '/admin/analytics';
 
   static const String notFound = '/404';
@@ -45,7 +49,10 @@ class AppRoutes {
     requestStatus: RouteAccess.clientOnly,
     adminDashboard: RouteAccess.adminOnly,
     maidProfileManagement: RouteAccess.adminOnly,
+    adminMaidAdd: RouteAccess.adminOnly,
+    adminMaidEdit: RouteAccess.adminOnly,
+    adminClients: RouteAccess.adminOnly,
     requestsManagement: RouteAccess.adminOnly,
-    analyticsDashboard: RouteAccess.adminOnly,
+    bulkUpload: RouteAccess.adminOnly,
   };
 }
