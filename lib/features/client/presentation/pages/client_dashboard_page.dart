@@ -76,10 +76,11 @@ class _ClientDashboardPageState extends State<ClientDashboardPage> {
             ),
             _MetricCard(
               label: 'Active requests',
-              value: '${store.requests.length}',
+              value: '${store.activeRequests.length}',
               icon: Icons.sync_alt,
               color: const Color(0xFF10B981),
             ),
+
           ],
         ),
         const SizedBox(height: 48),

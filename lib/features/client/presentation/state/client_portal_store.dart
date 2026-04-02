@@ -78,8 +78,27 @@ class ClientPortalStore extends ChangeNotifier {
   /// Returns the current list of all available maids
   List<MaidProfile> get maids => _maids;
 
-  /// Returns the current list of service requests for the client
-  List<ClientRequest> get requests => _requests;
+  /// Returns the current list of service requests for the client, sorted by creation date (newest first)
+  List<ClientRequest> get requests {
+    final list = List<ClientRequest>.from(_requests);
+    list.sort((a, b) => (b.createdAt ?? DateTime(0)).compareTo(a.createdAt ?? DateTime(0)));
+    return list;
+  }
+
+  /// Returns only the requests that are currently active (not completed or rejected), sorted by creation date
+  List<ClientRequest> get activeRequests {
+    final list = _requests
+        .where(
+          (r) =>
+              r.status != ClientRequestStatus.completed &&
+              r.status != ClientRequestStatus.rejected,
+        )
+        .toList();
+    list.sort((a, b) => (b.createdAt ?? DateTime(0)).compareTo(a.createdAt ?? DateTime(0)));
+    return list;
+  }
+
+
 
   /// Returns a filtered list of maids currently in the client's shortlist
   List<MaidProfile> get shortlist =>

@@ -56,6 +56,8 @@ class _RequestStatusPageState extends State<RequestStatusPage> {
       return const ClientLoadingState();
     }
     final requests = ClientPortalStore.instance.requests;
+
+
     return ListView(
       padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 24),
       children: [
@@ -98,9 +100,10 @@ class _RequestStatusPageState extends State<RequestStatusPage> {
               ),
               const SizedBox(height: 6),
               const Text(
-                'Track the progress of your active callbacks or hiring requests in real-time.',
+                'Track the progress of your current and past callbacks or hiring requests.',
                 style: TextStyle(color: Color(0xFF64748B), fontSize: 16),
               ),
+
             ],
           ),
         ),
