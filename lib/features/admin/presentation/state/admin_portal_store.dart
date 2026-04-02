@@ -35,15 +35,20 @@ class AdminPortalStore {
   void reset() => _loaded = false;
 
   // ── Maid CRUD ──────────────────────────────────────────────────────────────
-  void addMaid(AdminMaidProfile maid) {
-    _maids = <AdminMaidProfile>[maid, ..._maids];
+  Future<void> addMaid(AdminMaidProfile maid) async {
+    final realId = await _repo.createMaidProfile(maid);
+    // Create actual object with Firestore ID for local state sync
+    final finalMaid = AdminMaidProfile.fromMap(maid.toMap(), realId);
+    _maids = <AdminMaidProfile>[finalMaid, ..._maids];
   }
 
-  void updateMaid(AdminMaidProfile updated) {
+  Future<void> updateMaid(AdminMaidProfile updated) async {
+    await _repo.updateMaidProfile(updated);
     _maids = _maids.map((m) => m.id == updated.id ? updated : m).toList();
   }
 
-  void deleteMaid(String id) {
+  Future<void> deleteMaid(String id) async {
+    await _repo.deleteMaidProfile(id);
     _maids = _maids.where((m) => m.id != id).toList();
   }
 
@@ -56,17 +61,20 @@ class AdminPortalStore {
   }
 
   // ── Inquiry Workflow ───────────────────────────────────────────────────────
-  void approveInquiry(String id) {
+  Future<void> approveInquiry(String id) async {
+    await _repo.updateInquiryStatus(id, InquiryStatus.approved);
     final inq = _inquiries.firstWhere((i) => i.id == id);
     inq.status = InquiryStatus.approved;
   }
 
-  void rejectInquiry(String id) {
+  Future<void> rejectInquiry(String id) async {
+    await _repo.updateInquiryStatus(id, InquiryStatus.rejected);
     final inq = _inquiries.firstWhere((i) => i.id == id);
     inq.status = InquiryStatus.rejected;
   }
 
-  void assignInquiry(String id, String maidName) {
+  Future<void> assignInquiry(String id, String maidName) async {
+    await _repo.updateInquiryStatus(id, InquiryStatus.assigned);
     final inq = _inquiries.firstWhere((i) => i.id == id);
     inq.status = InquiryStatus.assigned;
     inq.assignedTo = maidName;

@@ -97,7 +97,7 @@ class _ClientManagementPageState extends State<ClientManagementPage> {
                               return DataRow(cells: [
                                 DataCell(Text(client.name, style: const TextStyle(fontWeight: FontWeight.w600))),
                                 DataCell(Text(client.email)),
-                                DataCell(Text(client.phone)),
+                                DataCell(Text(client.phone ?? '')),
                                 DataCell(AdminStatusChip(
                                   label: client.status == AdminClientStatus.active ? 'Active' : 'Suspended',
                                   color: client.status == AdminClientStatus.active ? const Color(0xFF10B981) : const Color(0xFFEF4444),

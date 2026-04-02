@@ -50,11 +50,13 @@ class _MaidManagementPageState extends State<MaidManagementPage> {
     );
 
     if (confirmed) {
-      setState(() {
-        AdminPortalStore.instance.deleteMaid(maid.id);
-        _onSearch(_searchController.text);
-      });
-      if (mounted) AdminDialog.showSnack(context, '${maid.name} deleted successfully.');
+      setState(() => _isLoading = true);
+      await AdminPortalStore.instance.deleteMaid(maid.id);
+      _onSearch(_searchController.text);
+      if (mounted) {
+        setState(() => _isLoading = false);
+        AdminDialog.showSnack(context, '${maid.name} deleted successfully.');
+      }
     }
   }
 

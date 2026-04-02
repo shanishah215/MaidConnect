@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 // ── Enums ────────────────────────────────────────────────────────────────────
 
 enum AdminMaidAvailability { available, unavailable, onLeave }
@@ -24,7 +26,7 @@ class AdminMaidProfile {
     required this.availabilityStatus,
     required this.bio,
     required this.monthlyRate,
-    required this.createdAt,
+    this.createdAt,
     this.photoUrl,
     this.documents = const <MaidDocument>[],
   });
@@ -39,9 +41,49 @@ class AdminMaidProfile {
   AdminMaidAvailability availabilityStatus;
   String bio;
   int monthlyRate;
-  final String createdAt;
+  final DateTime? createdAt;
   String? photoUrl;
   List<MaidDocument> documents;
+
+  factory AdminMaidProfile.fromMap(Map<String, dynamic> map, String docId) {
+    return AdminMaidProfile(
+      id: docId,
+      name: map['name'] ?? '',
+      age: map['age'] ?? 0,
+      nationality: map['nationality'] ?? '',
+      skills: List<String>.from(map['skills'] ?? []),
+      experienceYears: map['experienceYears'] ?? 0,
+      languages: List<String>.from(map['languages'] ?? []),
+      availabilityStatus: AdminMaidAvailability.values.firstWhere(
+        (e) => e.name == map['availabilityStatus'],
+        orElse: () => AdminMaidAvailability.available,
+      ),
+      bio: map['bio'] ?? '',
+      monthlyRate: map['monthlyRate'] ?? 0,
+      createdAt: (map['createdAt'] as Timestamp?)?.toDate(),
+      photoUrl: map['photoUrl'],
+      documents: (map['documents'] as List? ?? [])
+          .map((d) => MaidDocument.fromMap(Map<String, dynamic>.from(d)))
+          .toList(),
+    );
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'name': name,
+      'age': age,
+      'nationality': nationality,
+      'skills': skills,
+      'experienceYears': experienceYears,
+      'languages': languages,
+      'availabilityStatus': availabilityStatus.name,
+      'bio': bio,
+      'monthlyRate': monthlyRate,
+      'createdAt': createdAt != null ? Timestamp.fromDate(createdAt!) : FieldValue.serverTimestamp(),
+      'photoUrl': photoUrl,
+      'documents': documents.map((d) => d.toMap()).toList(),
+    };
+  }
 
   AdminMaidProfile copyWith({
     String? name,
@@ -78,11 +120,30 @@ class MaidDocument {
   const MaidDocument({
     required this.name,
     required this.type,
-    this.uploadedAt = 'Just now',
+    this.uploadedAt,
   });
   final String name;
   final AdminMaidDocType type;
-  final String uploadedAt;
+  final DateTime? uploadedAt;
+
+  factory MaidDocument.fromMap(Map<String, dynamic> map) {
+    return MaidDocument(
+      name: map['name'] ?? '',
+      type: AdminMaidDocType.values.firstWhere(
+        (e) => e.name == map['type'],
+        orElse: () => AdminMaidDocType.other,
+      ),
+      uploadedAt: (map['uploadedAt'] as Timestamp?)?.toDate(),
+    );
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'name': name,
+      'type': type.name,
+      'uploadedAt': uploadedAt != null ? Timestamp.fromDate(uploadedAt!) : FieldValue.serverTimestamp(),
+    };
+  }
 }
 
 // ── Client ────────────────────────────────────────────────────────────────────
@@ -92,18 +153,33 @@ class AdminClient {
     required this.id,
     required this.name,
     required this.email,
-    required this.phone,
-    required this.registeredAt,
+    this.phone,
+    this.registeredAt,
     required this.status,
     this.totalRequests = 0,
   });
   final String id;
   final String name;
   final String email;
-  final String phone;
-  final String registeredAt;
+  final String? phone;
+  final DateTime? registeredAt;
   final AdminClientStatus status;
   final int totalRequests;
+
+  factory AdminClient.fromMap(Map<String, dynamic> map, String docId) {
+    return AdminClient(
+      id: docId,
+      name: map['name'] ?? map['email'] ?? 'Unknown',
+      email: map['email'] ?? '',
+      phone: map['phone'],
+      registeredAt: (map['registeredAt'] ?? map['createdAt'] as Timestamp?)?.toDate(),
+      status: AdminClientStatus.values.firstWhere(
+        (e) => e.name == map['status'],
+        orElse: () => AdminClientStatus.active,
+      ),
+      totalRequests: map['totalRequests'] ?? 0,
+    );
+  }
 }
 
 // ── Inquiry ───────────────────────────────────────────────────────────────────
@@ -117,7 +193,7 @@ class ClientInquiry {
     required this.maidName,
     required this.type,
     required this.status,
-    required this.createdAt,
+    this.createdAt,
     required this.notes,
     this.assignedTo,
   });
@@ -128,9 +204,44 @@ class ClientInquiry {
   final String maidName;
   final InquiryType type;
   InquiryStatus status;
-  final String createdAt;
+  final DateTime? createdAt;
   final String notes;
   String? assignedTo;
+
+  factory ClientInquiry.fromMap(Map<String, dynamic> map, String docId) {
+    return ClientInquiry(
+      id: docId,
+      clientId: map['clientId'] ?? '',
+      clientName: map['clientName'] ?? '',
+      maidId: map['maidId'] ?? '',
+      maidName: map['maidName'] ?? '',
+      type: InquiryType.values.firstWhere(
+        (e) => e.name == map['type'],
+        orElse: () => InquiryType.hire,
+      ),
+      status: InquiryStatus.values.firstWhere(
+        (e) => e.name == map['status'],
+        orElse: () => InquiryStatus.pending,
+      ),
+      createdAt: (map['createdAt'] as Timestamp?)?.toDate(),
+      notes: map['notes'] ?? '',
+      assignedTo: map['assignedTo'],
+    );
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'clientId': clientId,
+      'clientName': clientName,
+      'maidId': maidId,
+      'maidName': maidName,
+      'type': type.name,
+      'status': status.name,
+      'createdAt': createdAt != null ? Timestamp.fromDate(createdAt!) : FieldValue.serverTimestamp(),
+      'notes': notes,
+      'assignedTo': assignedTo,
+    };
+  }
 }
 
 // ── Analytics ─────────────────────────────────────────────────────────────────

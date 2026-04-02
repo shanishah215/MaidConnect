@@ -72,9 +72,9 @@ class _RequestManagementPageState extends State<RequestManagementPage> with Sing
       icon: Icons.check_circle_outline,
     );
     if (ok) {
-      AdminPortalStore.instance.approveInquiry(inq.id);
+      await AdminPortalStore.instance.approveInquiry(inq.id);
       _updateDisplay();
-      AdminDialog.showSnack(context, 'Inquiry approved.');
+      if (mounted) AdminDialog.showSnack(context, 'Inquiry approved.');
     }
   }
 
@@ -86,9 +86,9 @@ class _RequestManagementPageState extends State<RequestManagementPage> with Sing
       confirmLabel: 'Reject',
     );
     if (ok) {
-      AdminPortalStore.instance.rejectInquiry(inq.id);
+      await AdminPortalStore.instance.rejectInquiry(inq.id);
       _updateDisplay();
-      AdminDialog.showSnack(context, 'Inquiry rejected.');
+      if (mounted) AdminDialog.showSnack(context, 'Inquiry rejected.');
     }
   }
 
@@ -104,9 +104,9 @@ class _RequestManagementPageState extends State<RequestManagementPage> with Sing
 
     final selectedMaid = await AdminDialog.assignMaid(context, maidNames: maids);
     if (selectedMaid != null) {
-      AdminPortalStore.instance.assignInquiry(inq.id, selectedMaid);
+      await AdminPortalStore.instance.assignInquiry(inq.id, selectedMaid);
       _updateDisplay();
-      AdminDialog.showSnack(context, 'Assigned $selectedMaid to inquiry.');
+      if (mounted) AdminDialog.showSnack(context, 'Assigned $selectedMaid to inquiry.');
     }
   }
 

@@ -29,6 +29,7 @@ class _MaidFormPageState extends State<MaidFormPage> {
   List<String> _skills = [];
   List<String> _languages = [];
   List<String> _uploadedDocs = [];
+  bool _isLoading = false;
 
   @override
   void initState() {
@@ -52,8 +53,10 @@ class _MaidFormPageState extends State<MaidFormPage> {
     }
   }
 
-  void _save() {
+  Future<void> _save() async {
     if (!_formKey.currentState!.validate()) return;
+    
+    setState(() => _isLoading = true);
 
     final updatedMaid = AdminMaidProfile(
       id: _isEdit ? _maid.id : 'maid-${DateTime.now().millisecondsSinceEpoch}',
@@ -66,23 +69,28 @@ class _MaidFormPageState extends State<MaidFormPage> {
       availabilityStatus: _availability,
       bio: _bioController.text,
       monthlyRate: int.parse(_rateController.text),
-      createdAt: _isEdit ? _maid.createdAt : DateTime.now().toIso8601String().split('T')[0],
+      createdAt: _isEdit ? _maid.createdAt : DateTime.now(),
       documents: _uploadedDocs.map((name) => MaidDocument(
         name: name,
         type: AdminMaidDocType.other,
-        uploadedAt: 'Just now',
+        uploadedAt: DateTime.now(),
       )).toList(),
     );
 
-    if (_isEdit) {
-      AdminPortalStore.instance.updateMaid(updatedMaid);
-      AdminDialog.showSnack(context, 'Profile updated successfully.');
-    } else {
-      AdminPortalStore.instance.addMaid(updatedMaid);
-      AdminDialog.showSnack(context, 'Maid profile created successfully.');
+    try {
+      if (_isEdit) {
+        await AdminPortalStore.instance.updateMaid(updatedMaid);
+        if (mounted) AdminDialog.showSnack(context, 'Profile updated successfully.');
+      } else {
+        await AdminPortalStore.instance.addMaid(updatedMaid);
+        if (mounted) AdminDialog.showSnack(context, 'Maid profile created successfully.');
+      }
+      if (mounted) context.go(AppRoutes.maidProfileManagement);
+    } catch (e) {
+      if (mounted) AdminDialog.showSnack(context, 'Error saving profile: $e');
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
     }
-
-    context.go(AppRoutes.maidProfileManagement);
   }
 
   @override
@@ -121,10 +129,16 @@ class _MaidFormPageState extends State<MaidFormPage> {
                     child: const Text('Cancel'),
                   ),
                   const SizedBox(width: 12),
-                  FilledButton(
-                    onPressed: _save,
-                    child: const Text('Save Profile'),
-                  ),
+                  if (_isLoading)
+                    const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 24),
+                      child: SizedBox(height: 20, width: 20, child: CircularProgressIndicator(strokeWidth: 2)),
+                    )
+                  else
+                    FilledButton(
+                      onPressed: _save,
+                      child: const Text('Save Profile'),
+                    ),
                 ],
               ],
             ),
@@ -141,8 +155,10 @@ class _MaidFormPageState extends State<MaidFormPage> {
                   const SizedBox(width: 12),
                   Expanded(
                     child: FilledButton(
-                      onPressed: _save,
-                      child: const Text('Save Profile'),
+                      onPressed: _isLoading ? null : _save,
+                      child: _isLoading 
+                        ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
+                        : const Text('Save Profile'),
                     ),
                   ),
                 ],
