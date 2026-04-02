@@ -32,6 +32,7 @@ class MaidProfile {
     required this.location,
     required this.monthlyRate,
     required this.rating,
+    this.photoUrl,
   });
 
   /// Unique identifier for the maid
@@ -67,6 +68,9 @@ class MaidProfile {
   /// Performance rating out of 5.0
   final double rating;
 
+  /// URL to the maid's profile photo
+  final String? photoUrl;
+
   /// Creates a MaidProfile from a Firestore document map
   factory MaidProfile.fromMap(Map<String, dynamic> map, String docId) {
     return MaidProfile(
@@ -86,6 +90,7 @@ class MaidProfile {
       location: map['location'] ?? map['nationality'] ?? '',
       monthlyRate: map['monthlyRate'] ?? 0,
       rating: (map['rating'] ?? 5.0).toDouble(),
+      photoUrl: map['photoUrl'],
     );
   }
 
@@ -102,6 +107,7 @@ class MaidProfile {
       'location': location,
       'monthlyRate': monthlyRate,
       'rating': rating,
+      'photoUrl': photoUrl,
     };
   }
 }

@@ -64,20 +64,28 @@ class MaidProfileCard extends StatelessWidget {
                     Container(
                       height: 56,
                       width: 56,
-                      decoration: const BoxDecoration(
+                      decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: Color(0xFFEFF6FF),
+                        color: const Color(0xFFEFF6FF),
+                        image: maid.photoUrl != null
+                            ? DecorationImage(
+                                image: NetworkImage(maid.photoUrl!),
+                                fit: BoxFit.cover,
+                              )
+                            : null,
                       ),
-                      child: Center(
-                        child: Text(
-                          maid.name.substring(0, 1).toUpperCase(),
-                          style: TextStyle(
-                            fontSize: 22,
-                            fontWeight: FontWeight.w700,
-                            color: theme.colorScheme.primary,
-                          ),
-                        ),
-                      ),
+                      child: maid.photoUrl == null
+                          ? Center(
+                              child: Text(
+                                maid.name.substring(0, 1).toUpperCase(),
+                                style: TextStyle(
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.w700,
+                                  color: theme.colorScheme.primary,
+                                ),
+                              ),
+                            )
+                          : null,
                     ),
                     const SizedBox(width: 16),
                     Expanded(

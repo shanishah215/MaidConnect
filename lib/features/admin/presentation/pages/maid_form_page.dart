@@ -6,6 +6,7 @@ import '../state/admin_portal_store.dart';
 import '../widgets/admin_form_section.dart';
 import '../widgets/admin_file_upload_area.dart';
 import '../widgets/admin_dialog.dart';
+import '../../../../core/services/media_upload_service.dart';
 
 class MaidFormPage extends StatefulWidget {
   const MaidFormPage({super.key, this.maidId});
@@ -28,8 +29,11 @@ class _MaidFormPageState extends State<MaidFormPage> {
   AdminMaidAvailability _availability = AdminMaidAvailability.available;
   List<String> _skills = [];
   List<String> _languages = [];
-  List<String> _uploadedDocs = [];
+  List<MaidDocument> _documents = [];
+  String? _photoUrl;
   bool _isLoading = false;
+  bool _isUploadingPhoto = false;
+  bool _isUploadingDoc = false;
 
   @override
   void initState() {
@@ -50,9 +54,49 @@ class _MaidFormPageState extends State<MaidFormPage> {
         _availability = _maid.availabilityStatus;
         _skills = List.from(_maid.skills);
         _languages = List.from(_maid.languages);
-        _uploadedDocs = _maid.documents.map((d) => d.name).toList();
+        _documents = List.from(_maid.documents);
+        _photoUrl = _maid.photoUrl;
       }
     }
+  }
+
+  Future<void> _pickAndUploadPhoto() async {
+    final xFile = await MediaUploadService.pickImage();
+    if (xFile == null) return;
+
+    setState(() => _isUploadingPhoto = true);
+    final url = await MediaUploadService.uploadToCloudinary(xFile: xFile);
+    setState(() {
+      _isUploadingPhoto = false;
+      if (url != null) {
+        _photoUrl = url;
+        AdminDialog.showSnack(context, 'Photo uploaded successfully.');
+      } else {
+        AdminDialog.showSnack(context, 'Failed to upload photo. Please check your credentials.');
+      }
+    });
+  }
+
+  Future<void> _pickAndUploadDocument() async {
+    final doc = await MediaUploadService.pickDocument();
+    if (doc == null) return;
+
+    setState(() => _isUploadingDoc = true);
+    final url = await MediaUploadService.uploadToCloudinary(platformFile: doc);
+    setState(() {
+      _isUploadingDoc = false;
+      if (url != null) {
+        _documents.add(MaidDocument(
+          name: doc.name,
+          type: AdminMaidDocType.other,
+          uploadedAt: DateTime.now(),
+          url: url,
+        ));
+        AdminDialog.showSnack(context, 'Document uploaded successfully.');
+      } else {
+        AdminDialog.showSnack(context, 'Failed to upload document.');
+      }
+    });
   }
 
   Future<void> _save() async {
@@ -72,15 +116,8 @@ class _MaidFormPageState extends State<MaidFormPage> {
       bio: _bioController.text,
       monthlyRate: int.parse(_rateController.text),
       createdAt: _isEdit ? _maid.createdAt : DateTime.now(),
-      documents: _uploadedDocs
-          .map(
-            (name) => MaidDocument(
-              name: name,
-              type: AdminMaidDocType.other,
-              uploadedAt: DateTime.now(),
-            ),
-          )
-          .toList(),
+      photoUrl: _photoUrl,
+      documents: _documents,
     );
 
     try {
@@ -374,14 +411,28 @@ class _MaidFormPageState extends State<MaidFormPage> {
         AdminFormSection(
           title: 'Profile Photo',
           description: 'Upload a clear profile picture.',
-          child: AdminFileUploadArea(
-            label: 'Upload Profile Image',
-            hint: 'PNG, JPG up to 10MB',
-            icon: Icons.add_a_photo_outlined,
-            onTap: () {
-              // UI Only Mock
-              AdminDialog.showSnack(context, 'Mock: Image picker opened.');
-            },
+          child: Column(
+            children: [
+              if (_photoUrl != null)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 16.0),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(12),
+                    child: Image.network(
+                      _photoUrl!,
+                      height: 200,
+                      width: double.infinity,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
+              AdminFileUploadArea(
+                label: _isUploadingPhoto ? 'Uploading...' : 'Upload Profile Image',
+                hint: 'PNG, JPG up to 10MB',
+                icon: _isUploadingPhoto ? Icons.sync : Icons.add_a_photo_outlined,
+                onTap: _isUploadingPhoto ? null : _pickAndUploadPhoto,
+              ),
+            ],
           ),
         ),
         const SizedBox(height: 24),
@@ -389,19 +440,14 @@ class _MaidFormPageState extends State<MaidFormPage> {
           title: 'Documents',
           description: 'Upload ID, certificates, and references.',
           child: AdminFileUploadArea(
-            label: 'Drop files here or click to upload',
+            label: _isUploadingDoc ? 'Uploading...' : 'Drop files here or click to upload',
             hint: 'PDF, JPG up to 10MB',
-            icon: Icons.upload_file,
-            uploadedFileNames: _uploadedDocs,
-            onTap: () {
-              // UI Only Mock: Add a dummy document name
-              setState(() {
-                _uploadedDocs.add('Document_${_uploadedDocs.length + 1}.pdf');
-              });
-            },
+            icon: _isUploadingDoc ? Icons.sync : Icons.upload_file,
+            uploadedFileNames: _documents.map((d) => d.name).toList(),
+            onTap: _isUploadingDoc ? null : _pickAndUploadDocument,
             onRemove: (index) {
               setState(() {
-                _uploadedDocs.removeAt(index);
+                _documents.removeAt(index);
               });
             },
           ),

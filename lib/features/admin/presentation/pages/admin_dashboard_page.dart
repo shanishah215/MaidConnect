@@ -226,9 +226,38 @@ class _RecentInquiriesTable extends StatelessWidget {
                     ),
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 12),
-                      child: Text(
-                        inq.maidName,
-                        style: const TextStyle(fontSize: 14),
+                      child: Row(
+                        children: [
+                          CircleAvatar(
+                            radius: 12,
+                            backgroundColor: const Color(0xFFF1F5F9),
+                            backgroundImage: AdminPortalStore.instance
+                                        .getMaidById(inq.maidId)
+                                        ?.photoUrl !=
+                                    null
+                                ? NetworkImage(
+                                    AdminPortalStore.instance
+                                        .getMaidById(inq.maidId)!
+                                        .photoUrl!,
+                                  )
+                                : null,
+                            child: AdminPortalStore.instance
+                                        .getMaidById(inq.maidId)
+                                        ?.photoUrl ==
+                                    null
+                                ? const Icon(
+                                    Icons.person,
+                                    size: 12,
+                                    color: Color(0xFF94A3B8),
+                                  )
+                                : null,
+                          ),
+                          const SizedBox(width: 8),
+                          Text(
+                            inq.maidName,
+                            style: const TextStyle(fontSize: 14),
+                          ),
+                        ],
                       ),
                     ),
                     Padding(

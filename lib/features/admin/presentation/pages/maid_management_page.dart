@@ -121,6 +121,12 @@ class _MaidManagementPageState extends State<MaidManagementPage> {
                         columns: const [
                           DataColumn(
                             label: Text(
+                              'Photo',
+                              style: TextStyle(fontWeight: FontWeight.w700),
+                            ),
+                          ),
+                          DataColumn(
+                            label: Text(
                               'Name',
                               style: TextStyle(fontWeight: FontWeight.w700),
                             ),
@@ -153,6 +159,22 @@ class _MaidManagementPageState extends State<MaidManagementPage> {
                         rows: _filteredMaids.map((maid) {
                           return DataRow(
                             cells: [
+                              DataCell(
+                                CircleAvatar(
+                                  radius: 18,
+                                  backgroundColor: const Color(0xFFF1F5F9),
+                                  backgroundImage: maid.photoUrl != null
+                                      ? NetworkImage(maid.photoUrl!)
+                                      : null,
+                                  child: maid.photoUrl == null
+                                      ? const Icon(
+                                          Icons.person,
+                                          size: 18,
+                                          color: Color(0xFF94A3B8),
+                                        )
+                                      : null,
+                                ),
+                              ),
                               DataCell(
                                 Text(
                                   maid.name,

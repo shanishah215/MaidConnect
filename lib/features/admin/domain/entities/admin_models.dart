@@ -156,13 +156,21 @@ class AdminMaidProfile {
 /// Data model for a document associated with a maid's profile
 class MaidDocument {
   /// Default constructor for MaidDocument
-  const MaidDocument({required this.name, required this.type, this.uploadedAt});
+  const MaidDocument({
+    required this.name,
+    required this.type,
+    this.uploadedAt,
+    this.url,
+  });
 
   /// Human-readable name of the document
   final String name;
 
   /// Categorized type of the document
   final AdminMaidDocType type;
+
+  /// Private URL to the uploaded document
+  final String? url;
 
   /// Timestamp of when the document was uploaded
   final DateTime? uploadedAt;
@@ -175,6 +183,7 @@ class MaidDocument {
         (e) => e.name == map['type'],
         orElse: () => AdminMaidDocType.other,
       ),
+      url: map['url'],
       uploadedAt: (map['uploadedAt'] as Timestamp?)?.toDate(),
     );
   }
@@ -184,6 +193,7 @@ class MaidDocument {
     return {
       'name': name,
       'type': type.name,
+      'url': url,
       'uploadedAt': uploadedAt != null
           ? Timestamp.fromDate(uploadedAt!)
           : FieldValue.serverTimestamp(),
