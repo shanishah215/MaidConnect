@@ -17,7 +17,7 @@ class MaidConnectApp extends StatelessWidget {
     );
 
     return MaterialApp.router(
-      title: 'MaidConnect',
+      title: 'Maid Connect',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         useMaterial3: true,

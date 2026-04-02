@@ -40,6 +40,7 @@ dependencies:
 
   # Modern typography for the SaaS UI refresh
   google_fonts: ^6.2.1
+  firebase_core: ^4.6.0
 
 dev_dependencies:
   flutter_test:
