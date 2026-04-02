@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -30,14 +31,37 @@ class _ClientLoginPageState extends State<ClientLoginPage> {
 
   Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) return;
-    
+
     setState(() => _isLoading = true);
-    
+
     try {
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
+      final credentials = await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: _emailController.text.trim(),
         password: _passwordController.text,
       );
+
+      // Verify if they are actually a Client before navigating
+      final userDoc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(credentials.user?.uid)
+          .get();
+
+      final role = userDoc.data()?['role'] as String?;
+
+      if (role != 'client') {
+        // Not a client! Sign out immediately.
+        await FirebaseAuth.instance.signOut();
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Access Denied: Use the Admin Panel to login.'),
+              backgroundColor: Colors.redAccent,
+            ),
+          );
+        }
+        return;
+      }
+
       if (mounted) context.go(AppRoutes.clientDashboard);
     } on FirebaseAuthException catch (e) {
       if (mounted) {
@@ -200,12 +224,6 @@ class _ClientLoginPageState extends State<ClientLoginPage> {
                       ),
                     ),
                   ),
-                ),
-                const SizedBox(height: 16),
-                Text(
-                  'Demo: any email + 6+ char password will sign you in.',
-                  style: TextStyle(fontSize: 11, color: Colors.grey[500]),
-                  textAlign: TextAlign.center,
                 ),
               ],
             ),

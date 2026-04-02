@@ -261,15 +261,6 @@ class _AdminLoginPageState extends State<AdminLoginPage> {
                                   )
                                 : const Text('Sign In'),
                           ),
-                          const SizedBox(height: 12),
-                          Text(
-                            'Demo: any email + 6+ char password will sign you in.',
-                            style: TextStyle(
-                              fontSize: 11,
-                              color: Colors.grey[600],
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
                         ],
                       ),
                     ),
