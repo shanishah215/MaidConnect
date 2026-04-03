@@ -77,37 +77,8 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
         ),
         const SizedBox(height: 32),
 
-        // ── Stats Row ────────────────────────────────────────────────────────
-        Wrap(
-          spacing: 24,
-          runSpacing: 24,
-          children: [
-            AdminStatTile(
-              label: 'Total Clients',
-              value: '${stats?.totalUsers ?? 0}',
-              icon: Icons.people_outline,
-              color: const Color(0xFF3B82F6),
-            ),
-            AdminStatTile(
-              label: 'Active Maids',
-              value: '${stats?.activeMaids ?? 0}',
-              icon: Icons.badge_outlined,
-              color: const Color(0xFF8B5CF6),
-            ),
-            AdminStatTile(
-              label: 'Active Requests',
-              value: '${stats?.activeRequests ?? 0}',
-              icon: Icons.sync_alt,
-              color: const Color(0xFF10B981),
-            ),
-            AdminStatTile(
-              label: 'Pending Approvals',
-              value: '${stats?.pendingApprovals ?? 0}',
-              icon: Icons.pending_actions,
-              color: const Color(0xFFF59E0B),
-            ),
-          ],
-        ),
+        // ── Stats Section ────────────────────────────────────────────────────
+        _buildStatsResponsive(context, stats),
         const SizedBox(height: 48),
 
         // ── Middle Section ───────────────────────────────────────────────────
@@ -133,6 +104,61 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
         const SizedBox(height: 48),
       ],
     );
+  }
+
+  Widget _buildStatsResponsive(BuildContext context, dynamic stats) {
+    final width = MediaQuery.of(context).size.width;
+    final isDesktop = width >= 1100;
+
+    final tiles = [
+      AdminStatTile(
+        label: 'Total Clients',
+        value: '${stats?.totalUsers ?? 0}',
+        icon: Icons.people_outline,
+        color: const Color(0xFF3B82F6),
+      ),
+      AdminStatTile(
+        label: 'Active Maids',
+        value: '${stats?.activeMaids ?? 0}',
+        icon: Icons.badge_outlined,
+        color: const Color(0xFF8B5CF6),
+      ),
+      AdminStatTile(
+        label: 'Active Requests',
+        value: '${stats?.activeRequests ?? 0}',
+        icon: Icons.sync_alt,
+        color: const Color(0xFF10B981),
+      ),
+      AdminStatTile(
+        label: 'Pending Approvals',
+        value: '${stats?.pendingApprovals ?? 0}',
+        icon: Icons.pending_actions,
+        color: const Color(0xFFF59E0B),
+      ),
+    ];
+
+    if (isDesktop) {
+      return GridView.count(
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        crossAxisCount: 4,
+        crossAxisSpacing: 24,
+        mainAxisSpacing: 24,
+        childAspectRatio: 1.4, // Adjusted from 1.8 to prevent overflow
+        children: tiles,
+      );
+    } else {
+      // Mobile/Tablet: keep it stacked and wide
+      return Wrap(
+        spacing: 24,
+        runSpacing: 24,
+        children: tiles.map((tile) => 
+            SizedBox(
+              width: width < 600 ? double.infinity : (width - 64 - 24) / 2, // 1 or 2 per row
+              child: tile,
+            )).toList(),
+      );
+    }
   }
 }
 

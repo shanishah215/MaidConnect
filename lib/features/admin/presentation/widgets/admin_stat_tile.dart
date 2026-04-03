@@ -25,7 +25,7 @@ class AdminStatTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       constraints: const BoxConstraints(minWidth: 200),
-      padding: const EdgeInsets.all(24),
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
@@ -45,7 +45,7 @@ class AdminStatTile extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
               Container(
-                padding: const EdgeInsets.all(10),
+                padding: const EdgeInsets.all(8), // Reduced from 10
                 decoration: BoxDecoration(
                   color: color.withOpacity(0.1),
                   borderRadius: BorderRadius.circular(10),
@@ -90,13 +90,13 @@ class AdminStatTile extends StatelessWidget {
                 ),
             ],
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 8), // Reduced from 16
           Text(
             value,
-            style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+            style: Theme.of(context).textTheme.headlineSmall?.copyWith( // Changed from headlineMedium to headlineSmall
               fontWeight: FontWeight.w800,
               color: const Color(0xFF0F172A),
-              letterSpacing: -1,
+              letterSpacing: -0.5,
             ),
           ),
           const SizedBox(height: 4),
