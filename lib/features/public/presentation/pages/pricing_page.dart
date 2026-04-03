@@ -43,7 +43,7 @@ class _PricingGrid extends StatelessWidget {
           children: const <Widget>[
             _PlanCard(
               title: 'Basic',
-              price: 'INR 2,999',
+              price: '\$39',
               items: <String>[
                 '1 profile shortlist',
                 'Phone consultation',
@@ -52,7 +52,7 @@ class _PricingGrid extends StatelessWidget {
             ),
             _PlanCard(
               title: 'Standard',
-              price: 'INR 5,999',
+              price: '\$79',
               isHighlighted: true,
               items: <String>[
                 'Up to 3 profile matches',
@@ -62,7 +62,7 @@ class _PricingGrid extends StatelessWidget {
             ),
             _PlanCard(
               title: 'Premium',
-              price: 'INR 9,999',
+              price: '\$149',
               items: <String>[
                 'Dedicated placement specialist',
                 'Expanded profile pool access',

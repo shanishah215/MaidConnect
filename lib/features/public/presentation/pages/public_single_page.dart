@@ -296,7 +296,7 @@ class _PricingPlansGrid extends StatelessWidget {
           children: const <Widget>[
             PricingPlanCard(
               name: 'Basic',
-              price: '2,999',
+              price: '39',
               features: <String>[
                 '1 profile shortlist',
                 'Consultation call with agency',
@@ -305,7 +305,7 @@ class _PricingPlansGrid extends StatelessWidget {
             ),
             PricingPlanCard(
               name: 'Standard',
-              price: '5,999',
+              price: '79',
               tag: 'Most Popular',
               highlighted: true,
               features: <String>[
@@ -316,7 +316,7 @@ class _PricingPlansGrid extends StatelessWidget {
             ),
             PricingPlanCard(
               name: 'Premium',
-              price: '9,999',
+              price: '149',
               features: <String>[
                 'Dedicated placement specialist',
                 'Expanded candidate access',

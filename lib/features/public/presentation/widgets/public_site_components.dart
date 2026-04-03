@@ -489,7 +489,7 @@ class PricingPlanCard extends StatelessWidget {
               style: const TextStyle(color: Color(0xFF0F172A)),
               children: <TextSpan>[
                 const TextSpan(
-                  text: 'INR ',
+                  text: '\$ ',
                   style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
                 ),
                 TextSpan(
