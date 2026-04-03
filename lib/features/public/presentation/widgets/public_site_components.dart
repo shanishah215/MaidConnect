@@ -42,37 +42,41 @@ class PublicSiteScaffold extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      extendBodyBehindAppBar: true,
       backgroundColor: const Color(0xFFF9FAFB),
       drawer: PublicSiteDrawer(currentRoute: currentRoute, items: navLinks),
-      body: CustomScrollView(
-        slivers: <Widget>[
-          SliverAppBar(
-            floating: true,
-            pinned: true,
-            elevation: 0,
-            backgroundColor: Colors.transparent,
-            flexibleSpace: ClipRect(
-              child: BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-                child: Container(
-                  color: Colors.white.withOpacity(0.7),
-                  child: PublicSiteHeader(
-                    items: navLinks
-                        .map(
-                          (link) => PublicNavigationItem(
-                            label: link.label,
-                            route: link.route,
-                            isSelected: currentRoute == link.route,
-                          ),
-                        )
-                        .toList(),
+      body: Scrollbar(
+        child: CustomScrollView(
+          physics: const BouncingScrollPhysics(
+            parent: AlwaysScrollableScrollPhysics(),
+          ),
+          slivers: <Widget>[
+            SliverAppBar(
+              floating: false,
+              pinned: true,
+              elevation: 0,
+              toolbarHeight: 80,
+              backgroundColor: Colors.transparent,
+              flexibleSpace: ClipRect(
+                child: BackdropFilter(
+                  filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
+                  child: Container(
+                    color: Colors.white.withOpacity(0.85),
+                    child: PublicSiteHeader(
+                      items: navLinks
+                          .map(
+                            (link) => PublicNavigationItem(
+                              label: link.label,
+                              route: link.route,
+                              isSelected: currentRoute == link.route,
+                            ),
+                          )
+                          .toList(),
+                    ),
                   ),
                 ),
               ),
+              automaticallyImplyLeading: false,
             ),
-            automaticallyImplyLeading: false,
-          ),
           SliverToBoxAdapter(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
@@ -90,8 +94,9 @@ class PublicSiteScaffold extends StatelessWidget {
           const SliverToBoxAdapter(child: PublicFooter()),
         ],
       ),
-    );
-  }
+    ),
+  );
+}
 }
 
 class PublicSiteHeader extends StatelessWidget {

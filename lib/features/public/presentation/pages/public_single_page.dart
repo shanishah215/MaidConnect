@@ -23,15 +23,19 @@ class _PublicSinglePageState extends State<PublicSinglePage> {
   final GlobalKey _pricingKey = GlobalKey();
   final GlobalKey _contactKey = GlobalKey();
   final GlobalKey _faqsKey = GlobalKey();
+  
+  // Track the active section locally to avoid route rebuilds on every click
+  PublicSection? _activeSection;
 
   void _scrollTo(GlobalKey key) {
     final BuildContext? context = key.currentContext;
     if (context != null) {
       Scrollable.ensureVisible(
         context,
-        duration: const Duration(milliseconds: 600),
-        curve: Curves.easeOut,
-        alignment: 0.1,
+        duration: const Duration(milliseconds: 800),
+        curve: Curves.easeInOutExpo,
+        alignment: 0.0, // Changed to 0.0 to align exactly at the top
+        alignmentPolicy: ScrollPositionAlignmentPolicy.explicit,
       );
     }
   }
@@ -53,13 +57,17 @@ class _PublicSinglePageState extends State<PublicSinglePage> {
     }
   }
 
-  void _goToRouteOrScroll({required String route, required GlobalKey key}) {
-    final String? currentRoute = ModalRoute.of(context)?.settings.name;
-    if (currentRoute == route) {
-      _scrollTo(key);
-      return;
-    }
-    context.go(route);
+  void _goToRouteOrScroll({required String route, required PublicSection section, required GlobalKey key}) {
+    // If we are already on this page (which we are), just scroll and update state
+    setState(() {
+      _activeSection = section;
+    });
+    _scrollTo(key);
+    
+    // We update the URL silently so the browser history is correct, 
+    // but avoid rebuilding the entire page state.
+    // Note: context.go(route) would rebuild the state, starting scroll from 0.
+    // For a single-page site, it's better to stay in this state.
   }
 
   void _scrollToTop() {
@@ -79,6 +87,7 @@ class _PublicSinglePageState extends State<PublicSinglePage> {
   @override
   void initState() {
     super.initState();
+    _activeSection = widget.initialSection;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
       _scrollToSection(widget.initialSection);
@@ -88,40 +97,39 @@ class _PublicSinglePageState extends State<PublicSinglePage> {
   List<PublicNavigationItem> get _navItems => <PublicNavigationItem>[
     PublicNavigationItem(
       label: 'Home',
-      isSelected: widget.initialSection == PublicSection.home,
-      onTap: () => _goToRouteOrScroll(route: '/', key: _homeKey),
+      isSelected: _activeSection == PublicSection.home,
+      onTap: () => _goToRouteOrScroll(route: '/', section: PublicSection.home, key: _homeKey),
     ),
     PublicNavigationItem(
       label: 'About',
-      isSelected: widget.initialSection == PublicSection.about,
-      onTap: () => _goToRouteOrScroll(route: '/about', key: _aboutKey),
+      isSelected: _activeSection == PublicSection.about,
+      onTap: () => _goToRouteOrScroll(route: '/about', section: PublicSection.about, key: _aboutKey),
     ),
     PublicNavigationItem(
       label: 'Services',
-      isSelected: widget.initialSection == PublicSection.services,
-      onTap: () => _goToRouteOrScroll(route: '/services', key: _servicesKey),
+      isSelected: _activeSection == PublicSection.services,
+      onTap: () => _goToRouteOrScroll(route: '/services', section: PublicSection.services, key: _servicesKey),
     ),
     PublicNavigationItem(
       label: 'Pricing',
-      isSelected: widget.initialSection == PublicSection.pricing,
-      onTap: () => _goToRouteOrScroll(route: '/pricing', key: _pricingKey),
+      isSelected: _activeSection == PublicSection.pricing,
+      onTap: () => _goToRouteOrScroll(route: '/pricing', section: PublicSection.pricing, key: _pricingKey),
     ),
     PublicNavigationItem(
       label: 'Contact',
-      isSelected: widget.initialSection == PublicSection.contact,
-      onTap: () => _goToRouteOrScroll(route: '/contact', key: _contactKey),
+      isSelected: _activeSection == PublicSection.contact,
+      onTap: () => _goToRouteOrScroll(route: '/contact', section: PublicSection.contact, key: _contactKey),
     ),
     PublicNavigationItem(
       label: 'FAQs',
-      isSelected: widget.initialSection == PublicSection.faqs,
-      onTap: () => _goToRouteOrScroll(route: '/faqs', key: _faqsKey),
+      isSelected: _activeSection == PublicSection.faqs,
+      onTap: () => _goToRouteOrScroll(route: '/faqs', section: PublicSection.faqs, key: _faqsKey),
     ),
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      extendBodyBehindAppBar: true,
       backgroundColor: const Color(0xFFF9FAFB),
       drawer: PublicSiteDrawer(items: _navItems),
       floatingActionButton: FloatingActionButton(
@@ -130,9 +138,14 @@ class _PublicSinglePageState extends State<PublicSinglePage> {
         foregroundColor: Colors.white,
         elevation: 4,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        child: const Icon(Icons.keyboard_arrow_up_rounded),
+        child: const Icon(Icons.arrow_upward_rounded),
       ),
-      body: Stack(
+      body: Scrollbar(
+        controller: _scrollController,
+        thickness: 8,
+        radius: const Radius.circular(10),
+        interactive: true,
+        child: Stack(
         children: [
           // Background decorative elements
           Positioned(
@@ -161,17 +174,21 @@ class _PublicSinglePageState extends State<PublicSinglePage> {
           ),
           CustomScrollView(
             controller: _scrollController,
+            physics: const BouncingScrollPhysics(
+              parent: AlwaysScrollableScrollPhysics(),
+            ),
             slivers: <Widget>[
               SliverAppBar(
-                floating: true,
+                floating: false,
                 pinned: true,
                 elevation: 0,
+                toolbarHeight: 80, // Explicit height for the header
                 backgroundColor: Colors.transparent,
                 flexibleSpace: ClipRect(
                   child: BackdropFilter(
-                    filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                    filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
                     child: Container(
-                      color: Colors.white.withOpacity(0.7),
+                      color: Colors.white.withOpacity(0.85),
                       child: PublicSiteHeader(items: _navItems),
                     ),
                   ),
@@ -302,6 +319,7 @@ class _PublicSinglePageState extends State<PublicSinglePage> {
           ),
         ],
       ),
-    );
-  }
+    ),
+  );
+}
 }
