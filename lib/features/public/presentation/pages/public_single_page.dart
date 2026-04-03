@@ -1,3 +1,4 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -28,9 +29,9 @@ class _PublicSinglePageState extends State<PublicSinglePage> {
     if (context != null) {
       Scrollable.ensureVisible(
         context,
-        duration: const Duration(milliseconds: 450),
-        curve: Curves.easeInOut,
-        alignment: 0.06,
+        duration: const Duration(milliseconds: 600),
+        curve: Curves.easeOut,
+        alignment: 0.1,
       );
     }
   }
@@ -64,8 +65,8 @@ class _PublicSinglePageState extends State<PublicSinglePage> {
   void _scrollToTop() {
     _scrollController.animateTo(
       0,
-      duration: const Duration(milliseconds: 450),
-      curve: Curves.easeInOut,
+      duration: const Duration(milliseconds: 600),
+      curve: Curves.easeOutQuint,
     );
   }
 
@@ -84,33 +85,33 @@ class _PublicSinglePageState extends State<PublicSinglePage> {
     });
   }
 
-  List<_OnePageNavItem> get _navItems => <_OnePageNavItem>[
-    _OnePageNavItem(
+  List<PublicNavigationItem> get _navItems => <PublicNavigationItem>[
+    PublicNavigationItem(
       label: 'Home',
       isSelected: widget.initialSection == PublicSection.home,
       onTap: () => _goToRouteOrScroll(route: '/', key: _homeKey),
     ),
-    _OnePageNavItem(
-      label: 'About Us',
+    PublicNavigationItem(
+      label: 'About',
       isSelected: widget.initialSection == PublicSection.about,
       onTap: () => _goToRouteOrScroll(route: '/about', key: _aboutKey),
     ),
-    _OnePageNavItem(
+    PublicNavigationItem(
       label: 'Services',
       isSelected: widget.initialSection == PublicSection.services,
       onTap: () => _goToRouteOrScroll(route: '/services', key: _servicesKey),
     ),
-    _OnePageNavItem(
+    PublicNavigationItem(
       label: 'Pricing',
       isSelected: widget.initialSection == PublicSection.pricing,
       onTap: () => _goToRouteOrScroll(route: '/pricing', key: _pricingKey),
     ),
-    _OnePageNavItem(
-      label: 'Contact Us',
+    PublicNavigationItem(
+      label: 'Contact',
       isSelected: widget.initialSection == PublicSection.contact,
       onTap: () => _goToRouteOrScroll(route: '/contact', key: _contactKey),
     ),
-    _OnePageNavItem(
+    PublicNavigationItem(
       label: 'FAQs',
       isSelected: widget.initialSection == PublicSection.faqs,
       onTap: () => _goToRouteOrScroll(route: '/faqs', key: _faqsKey),
@@ -120,370 +121,186 @@ class _PublicSinglePageState extends State<PublicSinglePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF7F9FC),
-      drawer: _OnePageDrawer(navItems: _navItems),
+      extendBodyBehindAppBar: true,
+      backgroundColor: const Color(0xFFF9FAFB),
+      drawer: PublicSiteDrawer(items: _navItems),
       floatingActionButton: FloatingActionButton(
         onPressed: _scrollToTop,
-        tooltip: 'Scroll to top',
-        child: const Icon(Icons.arrow_upward),
+        backgroundColor: const Color(0xFF6366F1),
+        foregroundColor: Colors.white,
+        elevation: 4,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        child: const Icon(Icons.keyboard_arrow_up_rounded),
       ),
-      body: CustomScrollView(
-        controller: _scrollController,
-        slivers: <Widget>[
-          SliverToBoxAdapter(child: _OnePageHeader(navItems: _navItems)),
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
-              child: Center(
-                child: ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: 1140),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: <Widget>[
-                      _SectionContainer(
-                        key: _homeKey,
-                        title: 'Home',
-                        subtitle:
-                            'A trusted maid agency platform for modern households',
-                        child: PublicHeroSection(
-                          headline: 'Trusted Maids for Every Home',
-                          subheading:
-                              'MaidConnect helps families hire verified and skilled maids with confidence. Discover candidates that match your schedule, needs, and budget.',
-                          onFindMaid: () => context.go('/client/register'),
-                          onContactUs: () => _scrollTo(_contactKey),
-                        ),
-                      ),
-                      _SectionContainer(
-                        key: _aboutKey,
-                        title: 'About Us',
-                        badge: 'Why MaidConnect',
-                        subtitle:
-                            'Professional, verified, and transparent domestic staffing',
-                        child: const _SimpleCardText(
-                          text:
-                              'MaidConnect is a public-facing maid agency platform focused on safety, transparency, and reliable placements for families.',
-                        ),
-                      ),
-                      _SectionContainer(
-                        key: _servicesKey,
-                        title: 'Services',
-                        badge: 'What We Offer',
-                        subtitle:
-                            'Flexible staffing options for families and homes',
-                        child: const _FeatureWrap(
-                          items: <FeatureCard>[
-                            FeatureCard(
-                              icon: Icons.cleaning_services_outlined,
-                              title: 'Housekeeping',
-                              description:
-                                  'Daily and weekly support for cleaning and laundry.',
-                            ),
-                            FeatureCard(
-                              icon: Icons.child_care_outlined,
-                              title: 'Childcare Support',
-                              description:
-                                  'Reliable childcare assistants for busy homes.',
-                            ),
-                            FeatureCard(
-                              icon: Icons.restaurant_outlined,
-                              title: 'Cooking Support',
-                              description:
-                                  'Skilled cooks for family meal preparation.',
-                            ),
-                          ],
-                        ),
-                      ),
-                      _SectionContainer(
-                        key: _pricingKey,
-                        title: 'Pricing / Plans',
-                        badge: 'Transparent Plans',
-                        subtitle:
-                            'Simple plans designed for every household hiring need',
-                        child: const _PricingPlansGrid(),
-                      ),
-                      _SectionContainer(
-                        key: _contactKey,
-                        title: 'Contact Us',
-                        badge: 'Talk To Our Team',
-                        subtitle:
-                            'Share your requirements and get matched quickly',
-                        child: const ContactSection(),
-                      ),
-                      _SectionContainer(
-                        key: _faqsKey,
-                        title: 'FAQs',
-                        badge: 'Need Answers?',
-                        subtitle:
-                            'Everything families ask before hiring through us',
-                        child: const FaqAccordionSection(
-                          items: <FaqItem>[
-                            FaqItem(
-                              question: 'How do you verify maids?',
-                              answer:
-                                  'Identity and background checks are completed before listing candidates.',
-                            ),
-                            FaqItem(
-                              question: 'Can I interview candidates?',
-                              answer:
-                                  'Yes, we help schedule interviews before placement.',
-                            ),
-                            FaqItem(
-                              question: 'Is there backend integration now?',
-                              answer:
-                                  'No, this version is UI-only for the public marketing website.',
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+      body: Stack(
+        children: [
+          // Background decorative elements
+          Positioned(
+            top: -100,
+            right: -100,
+            child: Container(
+              width: 400,
+              height: 400,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: const Color(0xFF6366F1).withOpacity(0.05),
               ),
             ),
           ),
-          const SliverToBoxAdapter(child: PublicFooter()),
-        ],
-      ),
-    );
-  }
-}
-
-class _SectionContainer extends StatelessWidget {
-  const _SectionContainer({
-    super.key,
-    required this.title,
-    required this.child,
-    required this.subtitle,
-    this.badge,
-  });
-
-  final String title;
-  final Widget child;
-  final String subtitle;
-  final String? badge;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 26),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          SectionTitle(title: title, subtitle: subtitle, badge: badge),
-          const SizedBox(height: 8),
-          child,
-        ],
-      ),
-    );
-  }
-}
-
-class _PricingPlansGrid extends StatelessWidget {
-  const _PricingPlansGrid();
-
-  @override
-  Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (BuildContext context, BoxConstraints constraints) {
-        final int columns = constraints.maxWidth < 980 ? 1 : 3;
-        return GridView.count(
-          crossAxisCount: columns,
-          mainAxisSpacing: 14,
-          crossAxisSpacing: 14,
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          childAspectRatio: columns == 1 ? 2.05 : 0.77,
-          children: const <Widget>[
-            PricingPlanCard(
-              name: 'Basic',
-              price: '39',
-              features: <String>[
-                '1 profile shortlist',
-                'Consultation call with agency',
-                'Email support',
-              ],
+          Positioned(
+            bottom: 200,
+            left: -150,
+            child: Container(
+              width: 500,
+              height: 500,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: const Color(0xFFBDC3C7).withOpacity(0.03),
+              ),
             ),
-            PricingPlanCard(
-              name: 'Standard',
-              price: '79',
-              tag: 'Most Popular',
-              highlighted: true,
-              features: <String>[
-                'Up to 3 profile matches',
-                'Interview scheduling support',
-                'Priority response and follow-up',
-              ],
-            ),
-            PricingPlanCard(
-              name: 'Premium',
-              price: '149',
-              features: <String>[
-                'Dedicated placement specialist',
-                'Expanded candidate access',
-                'Post-placement support',
-              ],
-            ),
-          ],
-        );
-      },
-    );
-  }
-}
-
-class _SimpleCardText extends StatelessWidget {
-  const _SimpleCardText({required this.text});
-
-  final String text;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFFE5EAF3)),
-      ),
-      child: Text(text, style: const TextStyle(height: 1.5)),
-    );
-  }
-}
-
-class _FeatureWrap extends StatelessWidget {
-  const _FeatureWrap({required this.items});
-
-  final List<FeatureCard> items;
-
-  @override
-  Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (BuildContext context, BoxConstraints constraints) {
-        final int columns = constraints.maxWidth < 700 ? 1 : 3;
-        return GridView.count(
-          crossAxisCount: columns,
-          mainAxisSpacing: 14,
-          crossAxisSpacing: 14,
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          childAspectRatio: columns == 1 ? 2.5 : 1.3,
-          children: items,
-        );
-      },
-    );
-  }
-}
-
-class _OnePageNavItem {
-  const _OnePageNavItem({
-    required this.label,
-    required this.onTap,
-    required this.isSelected,
-  });
-
-  final String label;
-  final VoidCallback onTap;
-  final bool isSelected;
-}
-
-class _OnePageHeader extends StatelessWidget {
-  const _OnePageHeader({required this.navItems});
-
-  final List<_OnePageNavItem> navItems;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        boxShadow: <BoxShadow>[
-          BoxShadow(
-            color: Color(0x11000000),
-            blurRadius: 14,
-            offset: Offset(0, 4),
           ),
-        ],
-      ),
-      child: SafeArea(
-        bottom: false,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
-          child: LayoutBuilder(
-            builder: (BuildContext context, BoxConstraints constraints) {
-              final bool compact = constraints.maxWidth < 850;
-              return Row(
-                children: <Widget>[
-                  const Icon(
-                    Icons.home_work_outlined,
-                    color: Color(0xFF1F4F99),
-                  ),
-                  const SizedBox(width: 10),
-                  const Text(
-                    'MaidConnect',
-                    style: TextStyle(fontWeight: FontWeight.w700, fontSize: 19),
-                  ),
-                  const Spacer(),
-                  if (!compact)
-                    Wrap(
-                      spacing: 6,
-                      children: navItems
-                          .map(
-                            (_OnePageNavItem item) => TextButton(
-                              onPressed: item.onTap,
-                              child: Text(
-                                item.label,
-                                style: TextStyle(
-                                  color: item.isSelected
-                                      ? const Color(0xFF1F4F99)
-                                      : const Color(0xFF334155),
-                                  fontWeight: item.isSelected
-                                      ? FontWeight.w700
-                                      : FontWeight.w500,
-                                ),
-                              ),
-                            ),
-                          )
-                          .toList(),
+          CustomScrollView(
+            controller: _scrollController,
+            slivers: <Widget>[
+              SliverAppBar(
+                floating: true,
+                pinned: true,
+                elevation: 0,
+                backgroundColor: Colors.transparent,
+                flexibleSpace: ClipRect(
+                  child: BackdropFilter(
+                    filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                    child: Container(
+                      color: Colors.white.withOpacity(0.7),
+                      child: PublicSiteHeader(items: _navItems),
                     ),
-                  if (compact)
-                    Builder(
-                      builder: (BuildContext context) => IconButton(
-                        icon: const Icon(Icons.menu),
-                        onPressed: () => Scaffold.of(context).openDrawer(),
+                  ),
+                ),
+                automaticallyImplyLeading: false,
+              ),
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 24,
+                    vertical: 32,
+                  ),
+                  child: Center(
+                    child: ConstrainedBox(
+                      constraints: const BoxConstraints(maxWidth: 1200),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: <Widget>[
+                          PublicSiteSection(
+                            key: _homeKey,
+                            title: 'Home',
+                            subtitle:
+                                'A trusted maid agency platform for modern households',
+                            child: PublicHeroSection(
+                              headline: 'Trusted Maids for Every Home',
+                              subheading:
+                                  'MaidConnect helps families hire verified and skilled maids with confidence. Discover candidates that match your schedule, needs, and budget.',
+                              onFindMaid: () => context.go('/client/register'),
+                              onContactUs: () => _scrollTo(_contactKey),
+                            ),
+                          ),
+                          const SizedBox(height: 40),
+                          PublicSiteSection(
+                            key: _aboutKey,
+                            title: 'About Us',
+                            badge: 'Why MaidConnect',
+                            subtitle:
+                                'Professional, verified, and transparent domestic staffing',
+                            child: const PublicAboutTextCard(
+                              text:
+                                  'MaidConnect is a public-facing maid agency platform focused on safety, transparency, and reliable placements for families. We bridge the gap between busy households and verified domestic professionals.',
+                            ),
+                          ),
+                          const SizedBox(height: 40),
+                          PublicSiteSection(
+                            key: _servicesKey,
+                            title: 'Services',
+                            badge: 'What We Offer',
+                            subtitle:
+                                'Flexible staffing options for families and homes',
+                            child: const PublicFeatureGrid(
+                              items: <FeatureCard>[
+                                FeatureCard(
+                                  icon: Icons.cleaning_services_rounded,
+                                  title: 'Housekeeping',
+                                  description:
+                                      'Daily and weekly support for cleaning and laundry services.',
+                                ),
+                                FeatureCard(
+                                  icon: Icons.child_care_rounded,
+                                  title: 'Childcare Support',
+                                  description:
+                                      'Reliable childcare assistants for busy homes and growing families.',
+                                ),
+                                FeatureCard(
+                                  icon: Icons.restaurant_rounded,
+                                  title: 'Cooking Support',
+                                  description:
+                                      'Skilled cooks for family meal preparation and kitchen management.',
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(height: 40),
+                          PublicSiteSection(
+                            key: _pricingKey,
+                            title: 'Pricing / Plans',
+                            badge: 'Transparent Plans',
+                            subtitle:
+                                'Simple plans designed for every household hiring need',
+                            child: const PublicPricingGrid(),
+                          ),
+                          const SizedBox(height: 40),
+                          PublicSiteSection(
+                            key: _contactKey,
+                            title: 'Contact Us',
+                            badge: 'Talk To Our Team',
+                            subtitle:
+                                'Share your requirements and get matched quickly',
+                            child: const ContactSection(),
+                          ),
+                          const SizedBox(height: 40),
+                          PublicSiteSection(
+                            key: _faqsKey,
+                            title: 'FAQs',
+                            badge: 'Need Answers?',
+                            subtitle:
+                                'Everything families ask before hiring through us',
+                            child: const FaqAccordionSection(
+                              items: <FaqItem>[
+                                FaqItem(
+                                  question: 'How do you verify maids?',
+                                  answer:
+                                      'Identity and background checks are completed before listing candidates to ensure safety for your home.',
+                                ),
+                                FaqItem(
+                                  question: 'Can I interview candidates?',
+                                  answer:
+                                      'Yes, we help schedule interviews before placement so you can find the perfect match.',
+                                ),
+                                FaqItem(
+                                  question: 'Is there a trial period?',
+                                  answer:
+                                      'Yes, we offer a trial period to ensure the candidate meets your household expectations.',
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(height: 48),
+                        ],
                       ),
                     ),
-                ],
-              );
-            },
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _OnePageDrawer extends StatelessWidget {
-  const _OnePageDrawer({required this.navItems});
-
-  final List<_OnePageNavItem> navItems;
-
-  @override
-  Widget build(BuildContext context) {
-    return Drawer(
-      child: SafeArea(
-        child: ListView(
-          children: navItems
-              .map(
-                (_OnePageNavItem item) => ListTile(
-                  title: Text(item.label),
-                  selected: item.isSelected,
-                  onTap: () {
-                    Navigator.pop(context);
-                    item.onTap();
-                  },
+                  ),
                 ),
-              )
-              .toList(),
-        ),
+              ),
+              const SliverToBoxAdapter(child: PublicFooter()),
+            ],
+          ),
+        ],
       ),
     );
   }

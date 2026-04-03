@@ -1,13 +1,21 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../app/router/app_routes.dart';
 
-class PublicNavLink {
-  const PublicNavLink({required this.label, required this.route});
+class PublicNavigationItem {
+  const PublicNavigationItem({
+    required this.label,
+    this.route,
+    this.onTap,
+    this.isSelected = false,
+  });
 
   final String label;
-  final String route;
+  final String? route;
+  final VoidCallback? onTap;
+  final bool isSelected;
 }
 
 class PublicSiteScaffold extends StatelessWidget {
@@ -22,31 +30,55 @@ class PublicSiteScaffold extends StatelessWidget {
   final String title;
   final List<Widget> sections;
 
-  static const List<PublicNavLink> navLinks = <PublicNavLink>[
-    PublicNavLink(label: 'Home', route: AppRoutes.home),
-    PublicNavLink(label: 'About Us', route: AppRoutes.about),
-    PublicNavLink(label: 'Services', route: AppRoutes.services),
-    PublicNavLink(label: 'Pricing', route: AppRoutes.pricing),
-    PublicNavLink(label: 'Contact Us', route: AppRoutes.contact),
-    PublicNavLink(label: 'FAQs', route: AppRoutes.faqs),
+  static const List<PublicNavigationItem> navLinks = <PublicNavigationItem>[
+    PublicNavigationItem(label: 'Home', route: AppRoutes.home),
+    PublicNavigationItem(label: 'About', route: AppRoutes.about),
+    PublicNavigationItem(label: 'Services', route: AppRoutes.services),
+    PublicNavigationItem(label: 'Pricing', route: AppRoutes.pricing),
+    PublicNavigationItem(label: 'Contact', route: AppRoutes.contact),
+    PublicNavigationItem(label: 'FAQs', route: AppRoutes.faqs),
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF7F9FC),
-      drawer: PublicHeaderDrawer(currentRoute: currentRoute, links: navLinks),
+      extendBodyBehindAppBar: true,
+      backgroundColor: const Color(0xFFF9FAFB),
+      drawer: PublicSiteDrawer(currentRoute: currentRoute, items: navLinks),
       body: CustomScrollView(
         slivers: <Widget>[
-          SliverToBoxAdapter(
-            child: PublicHeader(currentRoute: currentRoute, links: navLinks),
+          SliverAppBar(
+            floating: true,
+            pinned: true,
+            elevation: 0,
+            backgroundColor: Colors.transparent,
+            flexibleSpace: ClipRect(
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                child: Container(
+                  color: Colors.white.withOpacity(0.7),
+                  child: PublicSiteHeader(
+                    items: navLinks
+                        .map(
+                          (link) => PublicNavigationItem(
+                            label: link.label,
+                            route: link.route,
+                            isSelected: currentRoute == link.route,
+                          ),
+                        )
+                        .toList(),
+                  ),
+                ),
+              ),
+            ),
+            automaticallyImplyLeading: false,
           ),
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
               child: Center(
                 child: ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: 1140),
+                  constraints: const BoxConstraints(maxWidth: 1200),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: sections,
@@ -62,108 +94,182 @@ class PublicSiteScaffold extends StatelessWidget {
   }
 }
 
-class PublicHeader extends StatelessWidget {
-  const PublicHeader({
-    super.key,
-    required this.currentRoute,
-    required this.links,
-  });
+class PublicSiteHeader extends StatelessWidget {
+  const PublicSiteHeader({super.key, required this.items});
 
-  final String currentRoute;
-  final List<PublicNavLink> links;
+  final List<PublicNavigationItem> items;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        boxShadow: <BoxShadow>[
-          BoxShadow(
-            color: Color(0x11000000),
-            blurRadius: 14,
-            offset: Offset(0, 4),
-          ),
-        ],
-      ),
-      child: SafeArea(
-        bottom: false,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
-          child: LayoutBuilder(
-            builder: (BuildContext context, BoxConstraints constraints) {
-              final bool compact = constraints.maxWidth < 850;
+    return SafeArea(
+      bottom: false,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+        child: LayoutBuilder(
+          builder: (BuildContext context, BoxConstraints constraints) {
+            final bool compact = constraints.maxWidth < 850;
 
-              return Row(
-                children: <Widget>[
-                  const Icon(
-                    Icons.home_work_outlined,
-                    color: Color(0xFF1F4F99),
+            return Row(
+              children: <Widget>[
+                Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF6366F1).withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(12),
                   ),
-                  const SizedBox(width: 10),
-                  const Text(
-                    'MaidConnect',
-                    style: TextStyle(fontWeight: FontWeight.w700, fontSize: 19),
+                  child: const Icon(
+                    Icons.home_work_rounded,
+                    color: Color(0xFF6366F1),
+                    size: 24,
                   ),
-                  const Spacer(),
-                  if (!compact)
-                    Wrap(
-                      spacing: 6,
-                      children: links
+                ),
+                const SizedBox(width: 12),
+                const Text(
+                  'MaidConnect',
+                  style: TextStyle(
+                    fontWeight: FontWeight.w800,
+                    fontSize: 20,
+                    letterSpacing: -0.5,
+                    color: Color(0xFF1E293B),
+                  ),
+                ),
+                const Spacer(),
+                if (!compact)
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFF1F5F9).withOpacity(0.5),
+                      borderRadius: BorderRadius.circular(100),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: items
                           .map(
-                            (PublicNavLink link) => _HeaderLinkButton(
-                              label: link.label,
-                              route: link.route,
-                              selected: currentRoute == link.route,
+                            (PublicNavigationItem item) => Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 2,
+                              ),
+                              child: _HeaderLinkButton(item: item),
                             ),
                           )
                           .toList(),
                     ),
-                  if (compact)
-                    Builder(
-                      builder: (BuildContext context) => IconButton(
-                        icon: const Icon(Icons.menu),
-                        onPressed: () => Scaffold.of(context).openDrawer(),
+                  ),
+                if (!compact) ...[
+                  const SizedBox(width: 16),
+                  ElevatedButton(
+                    onPressed: () => context.go('/client/register'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF6366F1),
+                      foregroundColor: Colors.white,
+                      elevation: 0,
+
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(100),
                       ),
                     ),
+                    child: const Text(
+                      'Get Started',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                  ),
                 ],
-              );
-            },
-          ),
+                if (compact)
+                  Builder(
+                    builder: (BuildContext context) => IconButton(
+                      icon: const Icon(
+                        Icons.menu_rounded,
+                        color: Color(0xFF1E293B),
+                      ),
+                      onPressed: () => Scaffold.of(context).openDrawer(),
+                    ),
+                  ),
+              ],
+            );
+          },
         ),
       ),
     );
   }
 }
 
-class PublicHeaderDrawer extends StatelessWidget {
-  const PublicHeaderDrawer({
-    super.key,
-    required this.currentRoute,
-    required this.links,
-  });
+class PublicSiteDrawer extends StatelessWidget {
+  const PublicSiteDrawer({super.key, this.currentRoute, required this.items});
 
-  final String currentRoute;
-  final List<PublicNavLink> links;
+  final String? currentRoute;
+  final List<PublicNavigationItem> items;
 
   @override
   Widget build(BuildContext context) {
     return Drawer(
+      backgroundColor: Colors.white,
       child: SafeArea(
-        child: ListView(
-          children: links
-              .map(
-                (PublicNavLink link) => ListTile(
-                  title: Text(link.label),
-                  selected: link.route == currentRoute,
-                  onTap: () {
-                    Navigator.pop(context);
-                    if (link.route != currentRoute) {
-                      context.go(link.route);
-                    }
-                  },
-                ),
-              )
-              .toList(),
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(24.0),
+              child: Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF6366F1).withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: const Icon(
+                      Icons.home_work_rounded,
+                      color: Color(0xFF6366F1),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  const Text(
+                    'MaidConnect',
+                    style: TextStyle(fontWeight: FontWeight.w800, fontSize: 18),
+                  ),
+                ],
+              ),
+            ),
+            const Divider(),
+            Expanded(
+              child: ListView(
+                padding: const EdgeInsets.symmetric(horizontal: 12),
+                children: items.map((PublicNavigationItem item) {
+                  final bool isSelected =
+                      item.isSelected ||
+                      (item.route != null && item.route == currentRoute);
+                  return ListTile(
+                    title: Text(
+                      item.label,
+                      style: TextStyle(
+                        fontWeight: isSelected
+                            ? FontWeight.bold
+                            : FontWeight.w500,
+                        color: isSelected
+                            ? const Color(0xFF6366F1)
+                            : const Color(0xFF475569),
+                      ),
+                    ),
+                    selected: isSelected,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    selectedTileColor: const Color(
+                      0xFF6366F1,
+                    ).withOpacity(0.05),
+                    onTap: () {
+                      Navigator.pop(context);
+                      if (item.onTap != null) {
+                        item.onTap!();
+                      } else if (item.route != null &&
+                          item.route != currentRoute) {
+                        context.go(item.route!);
+                      }
+                    },
+                  );
+                }).toList(),
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -171,25 +277,35 @@ class PublicHeaderDrawer extends StatelessWidget {
 }
 
 class _HeaderLinkButton extends StatelessWidget {
-  const _HeaderLinkButton({
-    required this.label,
-    required this.route,
-    required this.selected,
-  });
+  const _HeaderLinkButton({required this.item});
 
-  final String label;
-  final String route;
-  final bool selected;
+  final PublicNavigationItem item;
 
   @override
   Widget build(BuildContext context) {
     return TextButton(
-      onPressed: () => context.go(route),
+      onPressed: () {
+        if (item.onTap != null) {
+          item.onTap!();
+        } else if (item.route != null) {
+          context.go(item.route!);
+        }
+      },
+      style: TextButton.styleFrom(
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(100)),
+        backgroundColor: item.isSelected ? Colors.white : Colors.transparent,
+        foregroundColor: item.isSelected
+            ? const Color(0xFF6366F1)
+            : const Color(0xFF64748B),
+        elevation: item.isSelected ? 2 : 0,
+        shadowColor: Colors.black.withOpacity(0.1),
+      ),
       child: Text(
-        label,
+        item.label,
         style: TextStyle(
-          fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
-          color: selected ? const Color(0xFF1F4F99) : const Color(0xFF1F2937),
+          fontSize: 14,
+          fontWeight: item.isSelected ? FontWeight.w700 : FontWeight.w600,
         ),
       ),
     );
@@ -213,114 +329,182 @@ class PublicHeroSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(28),
       decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: <Color>[Color(0xFF1F4F99), Color(0xFF2F80ED)],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
+        borderRadius: BorderRadius.circular(32),
+        gradient: const RadialGradient(
+          center: Alignment(-0.8, -0.6),
+          radius: 1.5,
+          colors: [Color(0xFF6366F1), Color(0xFF4F46E5), Color(0xFF3730A3)],
         ),
-        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0xFF4F46E5).withOpacity(0.3),
+            blurRadius: 30,
+            offset: const Offset(0, 15),
+          ),
+        ],
       ),
-      child: LayoutBuilder(
-        builder: (BuildContext context, BoxConstraints constraints) {
-          final bool narrow = constraints.maxWidth < 760;
-          return Flex(
-            direction: narrow ? Axis.vertical : Axis.horizontal,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              Expanded(
-                flex: narrow ? 0 : 3,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+      clipBehavior: Clip.antiAlias,
+      child: Stack(
+        children: [
+          Positioned(
+            top: -50,
+            right: -50,
+            child: Container(
+              width: 200,
+              height: 200,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.white.withOpacity(0.1),
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(48),
+            child: LayoutBuilder(
+              builder: (BuildContext context, BoxConstraints constraints) {
+                final bool narrow = constraints.maxWidth < 800;
+                return Column(
+                  crossAxisAlignment: narrow
+                      ? CrossAxisAlignment.center
+                      : CrossAxisAlignment.start,
                   children: <Widget>[
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 8,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.15),
+                        borderRadius: BorderRadius.circular(100),
+                        border: Border.all(
+                          color: Colors.white.withOpacity(0.2),
+                          width: 1,
+                        ),
+                      ),
+                      child: const Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            Icons.verified_rounded,
+                            color: Color(0xFFF9FAFB),
+                            size: 16,
+                          ),
+                          SizedBox(width: 8),
+                          Text(
+                            'Trusted by 10,000+ Families',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 12,
+                              fontWeight: FontWeight.w600,
+                              letterSpacing: 0.5,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 32),
                     Text(
                       headline,
-                      style: const TextStyle(
+                      textAlign: narrow ? TextAlign.center : TextAlign.left,
+                      style: TextStyle(
                         color: Colors.white,
-                        fontSize: 34,
-                        height: 1.2,
-                        fontWeight: FontWeight.w700,
+                        fontSize: narrow ? 36 : 48,
+                        height: 1.1,
+                        fontWeight: FontWeight.w900,
+                        letterSpacing: -1,
                       ),
                     ),
-                    const SizedBox(height: 12),
-                    Text(
-                      subheading,
-                      style: const TextStyle(
-                        color: Color(0xFFDDEBFF),
-                        fontSize: 16,
-                        height: 1.45,
+                    const SizedBox(height: 24),
+                    ConstrainedBox(
+                      constraints: const BoxConstraints(maxWidth: 600),
+                      child: Text(
+                        subheading,
+                        textAlign: narrow ? TextAlign.center : TextAlign.left,
+                        style: TextStyle(
+                          color: Colors.white.withOpacity(0.9),
+                          fontSize: 18,
+                          height: 1.6,
+                          fontWeight: FontWeight.w400,
+                        ),
                       ),
                     ),
-                    const SizedBox(height: 22),
+                    const SizedBox(height: 40),
                     Wrap(
-                      spacing: 12,
-                      runSpacing: 12,
+                      spacing: 16,
+                      runSpacing: 16,
+                      alignment: narrow
+                          ? WrapAlignment.center
+                          : WrapAlignment.start,
                       children: <Widget>[
-                        FilledButton(
-                          style: FilledButton.styleFrom(
+                        ElevatedButton(
+                          style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.white,
-                            foregroundColor: const Color(0xFF1F4F99),
+                            foregroundColor: const Color(0xFF4F46E5),
+                            elevation: 8,
+                            shadowColor: Colors.black.withOpacity(0.2),
                             padding: const EdgeInsets.symmetric(
-                              horizontal: 22,
-                              vertical: 14,
+                              horizontal: 32,
+                              vertical: 20,
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16),
                             ),
                           ),
                           onPressed:
                               onFindMaid ?? () => context.go(AppRoutes.contact),
-                          child: const Text('Find a Maid'),
+                          child: const Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                'Find a Maid',
+                                style: TextStyle(fontWeight: FontWeight.w800),
+                              ),
+                              SizedBox(width: 8),
+                              Icon(Icons.arrow_forward_rounded, size: 18),
+                            ],
+                          ),
                         ),
                         OutlinedButton(
-                          style: OutlinedButton.styleFrom(
-                            foregroundColor: Colors.white,
-                            side: const BorderSide(color: Colors.white70),
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 22,
-                              vertical: 14,
-                            ),
-                          ),
+                          style:
+                              OutlinedButton.styleFrom(
+                                foregroundColor: Colors.white,
+                                side: BorderSide(
+                                  color: Colors.white.withOpacity(0.4),
+                                  width: 2,
+                                ),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 32,
+                                  vertical: 20,
+                                ),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(16),
+                                ),
+                              ).copyWith(
+                                backgroundColor:
+                                    WidgetStateProperty.resolveWith(
+                                      (states) =>
+                                          states.contains(WidgetState.hovered)
+                                          ? Colors.white.withOpacity(0.1)
+                                          : Colors.transparent,
+                                    ),
+                              ),
                           onPressed:
                               onContactUs ??
                               () => context.go(AppRoutes.contact),
-                          child: const Text('Contact Us'),
+                          child: const Text(
+                            'Contact Us',
+                            style: TextStyle(fontWeight: FontWeight.w700),
+                          ),
                         ),
                       ],
                     ),
                   ],
-                ),
-              ),
-              if (!narrow) const SizedBox(width: 26),
-              Container(
-                width: narrow ? double.infinity : 290,
-                margin: EdgeInsets.only(top: narrow ? 20 : 0),
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: const Color(0x33FFFFFF),
-                  borderRadius: BorderRadius.circular(14),
-                ),
-                child: const Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Text(
-                      'Why families trust us',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w700,
-                        fontSize: 16,
-                      ),
-                    ),
-                    SizedBox(height: 10),
-                    Text(
-                      'Verified backgrounds\nSkill-matched profiles\nTransparent pricing',
-                      style: TextStyle(color: Color(0xFFF3F8FF), height: 1.5),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          );
-        },
+                );
+              },
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -341,21 +525,57 @@ class FeatureCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFFE5EAF3)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Icon(icon, color: const Color(0xFF1F4F99), size: 28),
-          const SizedBox(height: 12),
-          Text(title, style: const TextStyle(fontWeight: FontWeight.w700)),
-          const SizedBox(height: 8),
-          Text(description, style: const TextStyle(height: 1.45)),
+        color: Colors.white.withOpacity(0.6),
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(color: Colors.white.withOpacity(0.8), width: 1.5),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.04),
+            blurRadius: 20,
+            offset: const Offset(0, 10),
+          ),
         ],
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(24),
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+          child: Padding(
+            padding: const EdgeInsets.all(28),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF6366F1).withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                  child: Icon(icon, color: const Color(0xFF6366F1), size: 32),
+                ),
+                const SizedBox(height: 24),
+                Text(
+                  title,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w800,
+                    fontSize: 20,
+                    color: Color(0xFF1E293B),
+                  ),
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  description,
+                  style: TextStyle(
+                    height: 1.6,
+                    fontSize: 15,
+                    color: const Color(0xFF475569).withOpacity(0.9),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }
@@ -375,39 +595,52 @@ class SectionTitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 10),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          if (badge != null) ...<Widget>[
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-              decoration: BoxDecoration(
-                color: const Color(0xFFE8F1FF),
-                borderRadius: BorderRadius.circular(999),
-              ),
-              child: Text(
-                badge!,
-                style: const TextStyle(
-                  color: Color(0xFF1F4F99),
-                  fontWeight: FontWeight.w700,
-                  fontSize: 12,
-                ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        if (badge != null) ...<Widget>[
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+            decoration: BoxDecoration(
+              color: const Color(0xFF6366F1).withOpacity(0.1),
+              borderRadius: BorderRadius.circular(100),
+            ),
+            child: Text(
+              badge!.toUpperCase(),
+              style: const TextStyle(
+                color: Color(0xFF6366F1),
+                fontWeight: FontWeight.w800,
+                fontSize: 11,
+                letterSpacing: 1.2,
               ),
             ),
-            const SizedBox(height: 10),
-          ],
-          Text(
-            title,
-            style: Theme.of(
-              context,
-            ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w700),
           ),
-          const SizedBox(height: 6),
-          Text(subtitle, style: const TextStyle(height: 1.45)),
+          const SizedBox(height: 16),
         ],
-      ),
+        LayoutBuilder(
+          builder: (context, constraints) {
+            final bool narrow = constraints.maxWidth < 600;
+            return Text(
+              title,
+              style: TextStyle(
+                fontSize: narrow ? 28 : 36,
+                fontWeight: FontWeight.w900,
+                letterSpacing: -0.5,
+                color: const Color(0xFF1E293B),
+              ),
+            );
+          },
+        ),
+        const SizedBox(height: 12),
+        Text(
+          subtitle,
+          style: TextStyle(
+            height: 1.6,
+            fontSize: 18,
+            color: const Color(0xFF475569).withOpacity(0.8),
+          ),
+        ),
+      ],
     );
   }
 }
@@ -431,106 +664,171 @@ class PricingPlanCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(22),
       decoration: BoxDecoration(
-        color: highlighted ? const Color(0xFFF0F6FF) : Colors.white,
-        borderRadius: BorderRadius.circular(16),
+        color: highlighted ? Colors.white : Colors.white.withOpacity(0.5),
+        borderRadius: BorderRadius.circular(32),
         border: Border.all(
           color: highlighted
-              ? const Color(0xFF2F80ED)
-              : const Color(0xFFE5EAF3),
-          width: highlighted ? 1.4 : 1,
+              ? const Color(0xFF6366F1)
+              : Colors.white.withOpacity(0.8),
+          width: highlighted ? 2 : 1.5,
         ),
-        boxShadow: const <BoxShadow>[
+        boxShadow: [
           BoxShadow(
-            color: Color(0x120F172A),
-            blurRadius: 16,
-            offset: Offset(0, 8),
+            color: highlighted
+                ? const Color(0xFF6366F1).withOpacity(0.15)
+                : Colors.black.withOpacity(0.03),
+            blurRadius: 30,
+            offset: const Offset(0, 15),
           ),
         ],
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Row(
+      clipBehavior: Clip.antiAlias,
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+        child: Padding(
+          padding: const EdgeInsets.all(32),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              Text(
-                name,
-                style: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-              const Spacer(),
-              if (tag != null)
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 10,
-                    vertical: 4,
-                  ),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF1F4F99),
-                    borderRadius: BorderRadius.circular(999),
-                  ),
-                  child: Text(
-                    tag!,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 11,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          RichText(
-            text: TextSpan(
-              style: const TextStyle(color: Color(0xFF0F172A)),
-              children: <TextSpan>[
-                const TextSpan(
-                  text: '\$ ',
-                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
-                ),
-                TextSpan(
-                  text: price,
-                  style: const TextStyle(
-                    fontSize: 34,
-                    fontWeight: FontWeight.w800,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 14),
-          ...features.map(
-            (String item) => Padding(
-              padding: const EdgeInsets.only(bottom: 9),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              Row(
                 children: <Widget>[
-                  const Padding(
-                    padding: EdgeInsets.only(top: 3, right: 8),
-                    child: Icon(
-                      Icons.check_circle_rounded,
-                      color: Color(0xFF2F80ED),
-                      size: 16,
+                  Text(
+                    name,
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w800,
+                      letterSpacing: 1,
+                      color: highlighted
+                          ? const Color(0xFF6366F1)
+                          : const Color(0xFF64748B),
                     ),
                   ),
-                  Expanded(child: Text(item)),
+                  const Spacer(),
+                  if (tag != null)
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 4,
+                      ),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF6366F1),
+                        borderRadius: BorderRadius.circular(100),
+                      ),
+                      child: Text(
+                        tag!,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 10,
+                          fontWeight: FontWeight.w800,
+                        ),
+                      ),
+                    ),
                 ],
               ),
-            ),
+              const SizedBox(height: 24),
+              RichText(
+                text: TextSpan(
+                  style: const TextStyle(color: Color(0xFF1E293B)),
+                  children: <TextSpan>[
+                    const TextSpan(
+                      text: '\$ ',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    TextSpan(
+                      text: price,
+                      style: const TextStyle(
+                        fontSize: 44,
+                        fontWeight: FontWeight.w900,
+                        letterSpacing: -1,
+                      ),
+                    ),
+                    const TextSpan(
+                      text: ' /mo',
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Color(0xFF64748B),
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 32),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: features
+                    .map(
+                      (String item) => Padding(
+                        padding: const EdgeInsets.only(bottom: 16),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Container(
+                              padding: const EdgeInsets.all(2),
+                              decoration: const BoxDecoration(
+                                color: Color(0xFFE0E7FF),
+                                shape: BoxShape.circle,
+                              ),
+                              child: const Icon(
+                                Icons.check_rounded,
+                                color: Color(0xFF6366F1),
+                                size: 14,
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: Text(
+                                item,
+                                style: const TextStyle(
+                                  fontSize: 15,
+                                  color: Color(0xFF475569),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    )
+                    .toList(),
+              ),
+              const SizedBox(height: 24),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () => context.go(AppRoutes.contact),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: highlighted
+                        ? const Color(0xFF6366F1)
+                        : Colors.white,
+                    foregroundColor: highlighted
+                        ? Colors.white
+                        : const Color(0xFF1E293B),
+                    elevation: highlighted ? 4 : 0,
+                    shadowColor: const Color(0xFF6366F1).withOpacity(0.4),
+                    padding: const EdgeInsets.symmetric(vertical: 20),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                      side: highlighted
+                          ? BorderSide.none
+                          : const BorderSide(
+                              color: Color(0xFFE2E8F0),
+                              width: 1.5,
+                            ),
+                    ),
+                  ),
+                  child: const Text(
+                    'Get Started',
+                    style: TextStyle(fontWeight: FontWeight.w800),
+                  ),
+                ),
+              ),
+            ],
           ),
-          const Spacer(),
-          SizedBox(
-            width: double.infinity,
-            child: FilledButton(
-              onPressed: () => context.go(AppRoutes.contact),
-              child: const Text('Get Started'),
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }
@@ -551,33 +849,68 @@ class FaqAccordionSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFFE5EAF3)),
+        color: Colors.white.withOpacity(0.6),
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(color: Colors.white.withOpacity(0.8), width: 1.5),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.04),
+            blurRadius: 20,
+            offset: const Offset(0, 10),
+          ),
+        ],
       ),
-      child: ExpansionPanelList.radio(
-        expandedHeaderPadding: EdgeInsets.zero,
-        children: items
-            .asMap()
-            .entries
-            .map(
-              (MapEntry<int, FaqItem> entry) => ExpansionPanelRadio(
-                value: entry.key,
-                headerBuilder: (_, bool isExpanded) => ListTile(
+      clipBehavior: Clip.antiAlias,
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+        child: Column(
+          children: items.asMap().entries.map((entry) {
+            final isLast = entry.key == items.length - 1;
+            return Column(
+              children: [
+                ExpansionTile(
+                  tilePadding: const EdgeInsets.symmetric(
+                    horizontal: 24,
+                    vertical: 8,
+                  ),
+                  childrenPadding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
+                  iconColor: const Color(0xFF6366F1),
+                  collapsedIconColor: const Color(0xFF64748B),
                   title: Text(
                     entry.value.question,
-                    style: const TextStyle(fontWeight: FontWeight.w600),
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w700,
+                      fontSize: 17,
+                      color: Color(0xFF1E293B),
+                    ),
                   ),
+                  shape: const RoundedRectangleBorder(side: BorderSide.none),
+                  collapsedShape: const RoundedRectangleBorder(
+                    side: BorderSide.none,
+                  ),
+                  children: [
+                    Text(
+                      entry.value.answer,
+                      style: const TextStyle(
+                        height: 1.6,
+                        fontSize: 16,
+                        color: Color(0xFF475569),
+                      ),
+                    ),
+                  ],
                 ),
-                body: Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-                  child: Text(entry.value.answer),
-                ),
-              ),
-            )
-            .toList(),
+                if (!isLast)
+                  Divider(
+                    height: 1,
+                    indent: 24,
+                    endIndent: 24,
+                    color: const Color(0xFFE2E8F0).withOpacity(0.5),
+                  ),
+              ],
+            );
+          }).toList(),
+        ),
       ),
     );
   }
@@ -589,45 +922,175 @@ class ContactSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(22),
+      padding: const EdgeInsets.all(40),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFFE5EAF3)),
+        color: Colors.white.withOpacity(0.6),
+        borderRadius: BorderRadius.circular(32),
+        border: Border.all(color: Colors.white.withOpacity(0.8), width: 1.5),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.04),
+            blurRadius: 30,
+            offset: const Offset(0, 15),
+          ),
+        ],
       ),
-      child: LayoutBuilder(
-        builder: (BuildContext context, BoxConstraints constraints) {
-          final bool narrow = constraints.maxWidth < 760;
-          return Flex(
-            direction: narrow ? Axis.vertical : Axis.horizontal,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Expanded(
-                child: _ContactInfoColumn(
-                  title: 'Contact our team',
-                  rows: const <String>[
-                    'Phone: +91 90000 12345',
-                    'Email: hello@maidconnect.com',
-                    'Office: MG Road, Bengaluru',
-                    'Hours: Mon-Sat, 9:00 AM - 7:00 PM',
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(10),
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+          child: LayoutBuilder(
+            builder: (BuildContext context, BoxConstraints constraints) {
+              final bool narrow = constraints.maxWidth < 800;
+              return Flex(
+                direction: narrow ? Axis.vertical : Axis.horizontal,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  if (narrow)
+                    _ContactInfoColumn(
+                      title: 'Direct Support',
+                      rows: const [
+                        _ContactRow(
+                          icon: Icons.phone_rounded,
+                          text: '+91 90000 12345',
+                        ),
+                        _ContactRow(
+                          icon: Icons.email_rounded,
+                          text: 'hello@maidconnect.com',
+                        ),
+                        _ContactRow(
+                          icon: Icons.location_on_rounded,
+                          text: 'MG Road, Bengaluru',
+                        ),
+                        _ContactRow(
+                          icon: Icons.access_time_filled_rounded,
+                          text: 'Mon-Sat, 9 AM - 7 PM',
+                        ),
+                      ],
+                    )
+                  else
+                    const Expanded(
+                      flex: 1,
+                      child: _ContactInfoColumn(
+                        title: 'Direct Support',
+                        rows: [
+                          _ContactRow(
+                            icon: Icons.phone_rounded,
+                            text: '+91 90000 12345',
+                          ),
+                          _ContactRow(
+                            icon: Icons.email_rounded,
+                            text: 'hello@maidconnect.com',
+                          ),
+                          _ContactRow(
+                            icon: Icons.location_on_rounded,
+                            text: 'MG Road, Bengaluru',
+                          ),
+                          _ContactRow(
+                            icon: Icons.access_time_filled_rounded,
+                            text: 'Mon-Sat, 9 AM - 7 PM',
+                          ),
+                        ],
+                      ),
+                    ),
+                  if (!narrow) ...[
+                    const SizedBox(width: 40),
+                    Container(
+                      width: 1,
+                      height: 180,
+                      color: const Color(0xFFE2E8F0),
+                    ),
+                    const SizedBox(width: 40),
                   ],
-                ),
+                  if (narrow) const SizedBox(height: 48),
+                  if (narrow)
+                    _ContactInfoColumn(
+                      title: 'Quick Process',
+                      rows: const [
+                        _ContactRow(
+                          icon: Icons.looks_one_rounded,
+                          text: 'Share requirements',
+                        ),
+                        _ContactRow(
+                          icon: Icons.looks_two_rounded,
+                          text: 'Get handpicked matches',
+                        ),
+                        _ContactRow(
+                          icon: Icons.looks_3_rounded,
+                          text: 'Interview candidates',
+                        ),
+                        _ContactRow(
+                          icon: Icons.looks_4_rounded,
+                          text: 'Quick onboarding',
+                        ),
+                      ],
+                    )
+                  else
+                    const Expanded(
+                      flex: 1,
+                      child: _ContactInfoColumn(
+                        title: 'Quick Process',
+                        rows: [
+                          _ContactRow(
+                            icon: Icons.looks_one_rounded,
+                            text: 'Share requirements',
+                          ),
+                          _ContactRow(
+                            icon: Icons.looks_two_rounded,
+                            text: 'Get handpicked matches',
+                          ),
+                          _ContactRow(
+                            icon: Icons.looks_3_rounded,
+                            text: 'Interview candidates',
+                          ),
+                          _ContactRow(
+                            icon: Icons.looks_4_rounded,
+                            text: 'Quick onboarding',
+                          ),
+                        ],
+                      ),
+                    ),
+                ],
+              );
+            },
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _ContactRow extends StatelessWidget {
+  const _ContactRow({required this.icon, required this.text});
+  final IconData icon;
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 20),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: const Color(0xFF6366F1).withOpacity(0.05),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Icon(icon, color: const Color(0xFF6366F1), size: 20),
+          ),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Text(
+              text,
+              style: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+                color: Color(0xFF475569),
               ),
-              if (!narrow) const SizedBox(width: 18),
-              Expanded(
-                child: _ContactInfoColumn(
-                  title: 'Next steps',
-                  rows: const <String>[
-                    '1. Share your household requirements',
-                    '2. Get matched maid profiles',
-                    '3. Schedule interviews',
-                    '4. Complete onboarding quickly',
-                  ],
-                ),
-              ),
-            ],
-          );
-        },
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -637,21 +1100,24 @@ class _ContactInfoColumn extends StatelessWidget {
   const _ContactInfoColumn({required this.title, required this.rows});
 
   final String title;
-  final List<String> rows;
+  final List<Widget> rows;
 
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        Text(title, style: const TextStyle(fontWeight: FontWeight.w700)),
-        const SizedBox(height: 10),
-        ...rows.map(
-          (String row) => Padding(
-            padding: const EdgeInsets.only(bottom: 8),
-            child: Text(row),
+        Text(
+          title,
+          style: const TextStyle(
+            fontWeight: FontWeight.w800,
+            fontSize: 22,
+            color: Color(0xFF1E293B),
+            letterSpacing: -0.5,
           ),
         ),
+        const SizedBox(height: 32),
+        ...rows,
       ],
     );
   }
@@ -663,36 +1129,268 @@ class PublicFooter extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 26),
-      color: const Color(0xFF101B2D),
+      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 80),
+      color: const Color(0xFF0F172A),
       child: Center(
         child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 1140),
-          child: const Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          constraints: const BoxConstraints(maxWidth: 1200),
+          child: Column(
             children: <Widget>[
-              Text(
-                'MaidConnect',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 18,
-                  fontWeight: FontWeight.w700,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: const Icon(
+                      Icons.home_work_rounded,
+                      color: Colors.white,
+                      size: 24,
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  const Text(
+                    'MaidConnect',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 24,
+                      fontWeight: FontWeight.w900,
+                      letterSpacing: -1,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 24),
+              ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 500),
+                child: Text(
+                  'Trusted maid agency platform for safe, reliable, and professional home staffing solutions.',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Color(0xFF94A3B8),
+                    fontSize: 16,
+                    height: 1.6,
+                  ),
                 ),
               ),
-              SizedBox(height: 8),
-              Text(
-                'Trusted maid agency platform for safe, reliable, and professional home staffing.',
-                style: TextStyle(color: Color(0xFFB9C4D7)),
+              const SizedBox(height: 48),
+              Container(
+                width: 60,
+                height: 1,
+                color: Colors.white.withOpacity(0.1),
               ),
-              SizedBox(height: 16),
-              Text(
-                'Copyright 2026 MaidConnect. All rights reserved.',
-                style: TextStyle(color: Color(0xFF7D8BA3), fontSize: 12),
+              const SizedBox(height: 48),
+              const Text(
+                '© 2026 MaidConnect. Crafted with ❤️ for modern homes.',
+                style: TextStyle(
+                  color: Color(0xFF64748B),
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
             ],
           ),
         ),
       ),
+    );
+  }
+}
+
+class PublicSiteSection extends StatelessWidget {
+  const PublicSiteSection({
+    super.key,
+    required this.title,
+    required this.child,
+    required this.subtitle,
+    this.badge,
+  });
+
+  final String title;
+  final Widget child;
+  final String subtitle;
+  final String? badge;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 32),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          SectionTitle(title: title, subtitle: subtitle, badge: badge),
+          const SizedBox(height: 24),
+          child,
+        ],
+      ),
+    );
+  }
+}
+
+class PublicAboutTextCard extends StatelessWidget {
+  const PublicAboutTextCard({super.key, required this.text});
+
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(32),
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(0.6),
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: Colors.white.withOpacity(0.8), width: 1.5),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.03),
+            blurRadius: 20,
+            offset: const Offset(0, 10),
+          ),
+        ],
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(10),
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+          child: Text(
+            text,
+            style: const TextStyle(
+              height: 1.6,
+              fontSize: 16,
+              color: Color(0xFF475569),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class PublicFeatureGrid extends StatelessWidget {
+  const PublicFeatureGrid({super.key, required this.items});
+
+  final List<FeatureCard> items;
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (BuildContext context, BoxConstraints constraints) {
+        final int columns = constraints.maxWidth < 700 ? 1 : 3;
+        if (columns == 1) {
+          return Column(
+            children: [
+              for (var i = 0; i < items.length; i++) ...[
+                items[i],
+                if (i < items.length - 1) const SizedBox(height: 20),
+              ],
+            ],
+          );
+        }
+
+        return GridView.count(
+          crossAxisCount: 3,
+          mainAxisSpacing: 20,
+          crossAxisSpacing: 20,
+          shrinkWrap: true,
+          padding: EdgeInsets.zero,
+          physics: const NeverScrollableScrollPhysics(),
+          childAspectRatio: 1.1,
+          children: items,
+        );
+      },
+    );
+  }
+}
+
+class PublicPricingGrid extends StatelessWidget {
+  const PublicPricingGrid({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (BuildContext context, BoxConstraints constraints) {
+        final int columns = constraints.maxWidth < 980 ? 1 : 3;
+        if (columns == 1) {
+          return const Column(
+            children: [
+              PricingPlanCard(
+                name: 'Basic',
+                price: '39',
+                features: <String>[
+                  '1 profile shortlist',
+                  'Consultation call with agency',
+                  'Email support',
+                ],
+              ),
+              SizedBox(height: 24),
+              PricingPlanCard(
+                name: 'Standard',
+                price: '79',
+                tag: 'Most Popular',
+                highlighted: true,
+                features: <String>[
+                  'Up to 3 profile matches',
+                  'Interview scheduling support',
+                  'Priority response and follow-up',
+                ],
+              ),
+              SizedBox(height: 24),
+              PricingPlanCard(
+                name: 'Premium',
+                price: '149',
+                features: <String>[
+                  'Dedicated placement specialist',
+                  'Expanded candidate access',
+                  'Post-placement support',
+                ],
+              ),
+            ],
+          );
+        }
+
+        return GridView.count(
+          crossAxisCount: 3,
+          mainAxisSpacing: 24,
+          crossAxisSpacing: 24,
+          shrinkWrap: true,
+          padding: EdgeInsets.zero,
+          physics: const NeverScrollableScrollPhysics(),
+          childAspectRatio: 0.72,
+          children: const <Widget>[
+            PricingPlanCard(
+              name: 'Basic',
+              price: '39',
+              features: <String>[
+                '1 profile shortlist',
+                'Consultation call with agency',
+                'Email support',
+              ],
+            ),
+            PricingPlanCard(
+              name: 'Standard',
+              price: '79',
+              tag: 'Most Popular',
+              highlighted: true,
+              features: <String>[
+                'Up to 3 profile matches',
+                'Interview scheduling support',
+                'Priority response and follow-up',
+              ],
+            ),
+            PricingPlanCard(
+              name: 'Premium',
+              price: '149',
+              features: <String>[
+                'Dedicated placement specialist',
+                'Expanded candidate access',
+                'Post-placement support',
+              ],
+            ),
+          ],
+        );
+      },
     );
   }
 }
