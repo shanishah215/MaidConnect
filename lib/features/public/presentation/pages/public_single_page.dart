@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../widgets/public_site_components.dart';
 
-enum PublicSection { home, about, services, pricing, contact, faqs }
+enum PublicSection { home, services, pricing, contact, faqs }
 
 class PublicSinglePage extends StatefulWidget {
   const PublicSinglePage({super.key, this.initialSection = PublicSection.home});
@@ -18,7 +18,6 @@ class PublicSinglePage extends StatefulWidget {
 class _PublicSinglePageState extends State<PublicSinglePage> {
   final ScrollController _scrollController = ScrollController();
   final GlobalKey _homeKey = GlobalKey();
-  final GlobalKey _aboutKey = GlobalKey();
   final GlobalKey _servicesKey = GlobalKey();
   final GlobalKey _pricingKey = GlobalKey();
   final GlobalKey _contactKey = GlobalKey();
@@ -44,8 +43,6 @@ class _PublicSinglePageState extends State<PublicSinglePage> {
     switch (section) {
       case PublicSection.home:
         _scrollTo(_homeKey);
-      case PublicSection.about:
-        _scrollTo(_aboutKey);
       case PublicSection.services:
         _scrollTo(_servicesKey);
       case PublicSection.pricing:
@@ -99,11 +96,6 @@ class _PublicSinglePageState extends State<PublicSinglePage> {
       label: 'Home',
       isSelected: _activeSection == PublicSection.home,
       onTap: () => _goToRouteOrScroll(route: '/', section: PublicSection.home, key: _homeKey),
-    ),
-    PublicNavigationItem(
-      label: 'About',
-      isSelected: _activeSection == PublicSection.about,
-      onTap: () => _goToRouteOrScroll(route: '/about', section: PublicSection.about, key: _aboutKey),
     ),
     PublicNavigationItem(
       label: 'Services',
@@ -207,29 +199,119 @@ class _PublicSinglePageState extends State<PublicSinglePage> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: <Widget>[
-                          PublicSiteSection(
+                          // Home Section (Hero)
+                          Padding(
                             key: _homeKey,
-                            title: 'Home',
-                            subtitle:
-                                'A trusted maid agency platform for modern households',
-                            child: PublicHeroSection(
-                              headline: 'Trusted Maids for Every Home',
-                              subheading:
-                                  'MaidConnect helps families hire verified and skilled maids with confidence. Discover candidates that match your schedule, needs, and budget.',
-                              onFindMaid: () => context.go('/client/register'),
-                              onContactUs: () => _scrollTo(_contactKey),
-                            ),
-                          ),
-                          const SizedBox(height: 40),
-                          PublicSiteSection(
-                            key: _aboutKey,
-                            title: 'About Us',
-                            badge: 'Why MaidConnect',
-                            subtitle:
-                                'Professional, verified, and transparent domestic staffing',
-                            child: const PublicAboutTextCard(
-                              text:
-                                  'MaidConnect is a public-facing maid agency platform focused on safety, transparency, and reliable placements for families. We bridge the gap between busy households and verified domestic professionals.',
+                            padding: const EdgeInsets.only(bottom: 40),
+                            child: LayoutBuilder(
+                              builder: (context, constraints) {
+                                final bool isMobile =
+                                    constraints.maxWidth < 900;
+
+                                final Widget description = Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const Text(
+                                      'Trusted Maids for Every Home',
+                                      style: TextStyle(
+                                        fontSize: 48,
+                                        fontWeight: FontWeight.w900,
+                                        height: 1.1,
+                                        color: Color(0xFF1E293B),
+                                        letterSpacing: -1,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 24),
+                                    const Text(
+                                      'MaidConnect helps families hire verified and skilled maids with confidence. We bridge the gap between busy households and verified domestic professionals, focusing on safety, transparency, and reliable placements. Our mission is to make the hiring journey seamless through professional screening and guided match-making.',
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        height: 1.6,
+                                        color: Color(0xFF64748B),
+                                      ),
+                                    ),
+                                    const SizedBox(height: 40),
+                                    Row(
+                                      children: [
+                                        ElevatedButton(
+                                          onPressed: () => context.go(
+                                            '/client/register',
+                                          ),
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor: const Color(
+                                              0xFF6366F1,
+                                            ),
+                                            foregroundColor: Colors.white,
+                                            padding: const EdgeInsets.symmetric(
+                                              horizontal: 32,
+                                              vertical: 20,
+                                            ),
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(16),
+                                            ),
+                                          ),
+                                          child: const Text(
+                                            'Find a Maid',
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ),
+                                        const SizedBox(width: 16),
+                                        OutlinedButton(
+                                          onPressed:
+                                              () => _scrollTo(_contactKey),
+                                          style: OutlinedButton.styleFrom(
+                                            foregroundColor: const Color(
+                                              0xFF6366F1,
+                                            ),
+                                            side: const BorderSide(
+                                              color: Color(0xFF6366F1),
+                                            ),
+                                            padding: const EdgeInsets.symmetric(
+                                              horizontal: 32,
+                                              vertical: 20,
+                                            ),
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(16),
+                                            ),
+                                          ),
+                                          child: const Text(
+                                            'Contact Us',
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                );
+
+                                if (isMobile) {
+                                  return Column(
+                                    children: [
+                                      description,
+                                      const SizedBox(height: 48),
+                                      const PurpleHeroCard(),
+                                    ],
+                                  );
+                                }
+
+                                return Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Expanded(flex: 3, child: description),
+                                    const SizedBox(width: 64),
+                                    const Expanded(
+                                      flex: 2,
+                                      child: PurpleHeroCard(),
+                                    ),
+                                  ],
+                                );
+                              },
                             ),
                           ),
                           const SizedBox(height: 40),

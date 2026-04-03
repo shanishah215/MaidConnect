@@ -5,6 +5,7 @@ import '../../features/public/presentation/pages/public_pages.dart';
 
 /// Routes that belong exclusively to the public-facing website.
 /// Accessible at `/`, `/about`, `/services`, `/pricing`, `/contact`, `/faqs`.
+/// Accessible at `/`, `/services`, `/pricing`, `/contact`, `/faqs`.
 /// No authentication required. No client or admin references.
 class PublicRouter {
   PublicRouter._();
@@ -13,10 +14,6 @@ class PublicRouter {
     GoRoute(
       path: AppRoutes.home,
       builder: (context, state) => PublicPages.home(),
-    ),
-    GoRoute(
-      path: AppRoutes.about,
-      builder: (context, state) => PublicPages.about(),
     ),
     GoRoute(
       path: AppRoutes.services,

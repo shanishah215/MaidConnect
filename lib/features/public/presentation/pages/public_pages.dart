@@ -8,9 +8,6 @@ class PublicPages {
   static Widget home() =>
       const PublicSinglePage(initialSection: PublicSection.home);
 
-  static Widget about() =>
-      const PublicSinglePage(initialSection: PublicSection.about);
-
   static Widget services() =>
       const PublicSinglePage(initialSection: PublicSection.services);
 

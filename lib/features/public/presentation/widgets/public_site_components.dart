@@ -32,7 +32,6 @@ class PublicSiteScaffold extends StatelessWidget {
 
   static const List<PublicNavigationItem> navLinks = <PublicNavigationItem>[
     PublicNavigationItem(label: 'Home', route: AppRoutes.home),
-    PublicNavigationItem(label: 'About', route: AppRoutes.about),
     PublicNavigationItem(label: 'Services', route: AppRoutes.services),
     PublicNavigationItem(label: 'Pricing', route: AppRoutes.pricing),
     PublicNavigationItem(label: 'Contact', route: AppRoutes.contact),
@@ -317,28 +316,18 @@ class _HeaderLinkButton extends StatelessWidget {
   }
 }
 
-class PublicHeroSection extends StatelessWidget {
-  const PublicHeroSection({
-    super.key,
-    required this.headline,
-    required this.subheading,
-    this.onFindMaid,
-    this.onContactUs,
-  });
-
-  final String headline;
-  final String subheading;
-  final VoidCallback? onFindMaid;
-  final VoidCallback? onContactUs;
+class PurpleHeroCard extends StatelessWidget {
+  const PurpleHeroCard({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Container(
+      height: 400,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(32),
-        gradient: const RadialGradient(
-          center: Alignment(-0.8, -0.6),
-          radius: 1.5,
+        gradient: const LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
           colors: [Color(0xFF6366F1), Color(0xFF4F46E5), Color(0xFF3730A3)],
         ),
         boxShadow: [
@@ -364,149 +353,62 @@ class PublicHeroSection extends StatelessWidget {
               ),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.all(48),
-            child: LayoutBuilder(
-              builder: (BuildContext context, BoxConstraints constraints) {
-                final bool narrow = constraints.maxWidth < 800;
-                return Column(
-                  crossAxisAlignment: narrow
-                      ? CrossAxisAlignment.center
-                      : CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 8,
-                      ),
-                      decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.15),
-                        borderRadius: BorderRadius.circular(100),
-                        border: Border.all(
-                          color: Colors.white.withOpacity(0.2),
-                          width: 1,
-                        ),
-                      ),
-                      child: const Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(
-                            Icons.verified_rounded,
-                            color: Color(0xFFF9FAFB),
-                            size: 16,
-                          ),
-                          SizedBox(width: 8),
-                          Text(
-                            'Trusted by 10,000+ Families',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 12,
-                              fontWeight: FontWeight.w600,
-                              letterSpacing: 0.5,
-                            ),
-                          ),
-                        ],
+          Positioned(
+            bottom: -30,
+            left: -30,
+            child: Container(
+              width: 150,
+              height: 150,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.white.withOpacity(0.05),
+              ),
+            ),
+          ),
+          Center(
+            child: Padding(
+              padding: const EdgeInsets.all(40),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(20),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.15),
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        color: Colors.white.withOpacity(0.2),
+                        width: 1,
                       ),
                     ),
-                    const SizedBox(height: 32),
-                    Text(
-                      headline,
-                      textAlign: narrow ? TextAlign.center : TextAlign.left,
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: narrow ? 36 : 48,
-                        height: 1.1,
-                        fontWeight: FontWeight.w900,
-                        letterSpacing: -1,
-                      ),
+                    child: const Icon(
+                      Icons.verified_user_rounded,
+                      color: Colors.white,
+                      size: 64,
                     ),
-                    const SizedBox(height: 24),
-                    ConstrainedBox(
-                      constraints: const BoxConstraints(maxWidth: 600),
-                      child: Text(
-                        subheading,
-                        textAlign: narrow ? TextAlign.center : TextAlign.left,
-                        style: TextStyle(
-                          color: Colors.white.withOpacity(0.9),
-                          fontSize: 18,
-                          height: 1.6,
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ),
+                  ),
+                  const SizedBox(height: 32),
+                  const Text(
+                    '100% Verified',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 28,
+                      fontWeight: FontWeight.w900,
+                      letterSpacing: -0.5,
                     ),
-                    const SizedBox(height: 40),
-                    Wrap(
-                      spacing: 16,
-                      runSpacing: 16,
-                      alignment: narrow
-                          ? WrapAlignment.center
-                          : WrapAlignment.start,
-                      children: <Widget>[
-                        ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.white,
-                            foregroundColor: const Color(0xFF4F46E5),
-                            elevation: 8,
-                            shadowColor: Colors.black.withOpacity(0.2),
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 32,
-                              vertical: 20,
-                            ),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(16),
-                            ),
-                          ),
-                          onPressed:
-                              onFindMaid ?? () => context.go(AppRoutes.contact),
-                          child: const Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text(
-                                'Find a Maid',
-                                style: TextStyle(fontWeight: FontWeight.w800),
-                              ),
-                              SizedBox(width: 8),
-                              Icon(Icons.arrow_forward_rounded, size: 18),
-                            ],
-                          ),
-                        ),
-                        OutlinedButton(
-                          style:
-                              OutlinedButton.styleFrom(
-                                foregroundColor: Colors.white,
-                                side: BorderSide(
-                                  color: Colors.white.withOpacity(0.4),
-                                  width: 2,
-                                ),
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 32,
-                                  vertical: 20,
-                                ),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(16),
-                                ),
-                              ).copyWith(
-                                backgroundColor:
-                                    WidgetStateProperty.resolveWith(
-                                      (states) =>
-                                          states.contains(WidgetState.hovered)
-                                          ? Colors.white.withOpacity(0.1)
-                                          : Colors.transparent,
-                                    ),
-                              ),
-                          onPressed:
-                              onContactUs ??
-                              () => context.go(AppRoutes.contact),
-                          child: const Text(
-                            'Contact Us',
-                            style: TextStyle(fontWeight: FontWeight.w700),
-                          ),
-                        ),
-                      ],
+                  ),
+                  const SizedBox(height: 12),
+                  Text(
+                    'Background checks completed for every professional candidate.',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Colors.white.withOpacity(0.8),
+                      fontSize: 16,
+                      height: 1.4,
                     ),
-                  ],
-                );
-              },
+                  ),
+                ],
+              ),
             ),
           ),
         ],

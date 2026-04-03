@@ -4,7 +4,6 @@ class AppRoutes {
   AppRoutes._();
 
   static const String home = '/';
-  static const String about = '/about';
   static const String services = '/services';
   static const String pricing = '/pricing';
   static const String contact = '/contact';
@@ -32,7 +31,6 @@ class AppRoutes {
 
   static const Map<String, RouteAccess> accessControl = <String, RouteAccess>{
     home: RouteAccess.public,
-    about: RouteAccess.public,
     services: RouteAccess.public,
     pricing: RouteAccess.public,
     contact: RouteAccess.public,
